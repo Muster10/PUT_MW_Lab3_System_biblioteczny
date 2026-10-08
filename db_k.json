@@ -1,0 +1,56 @@
+[
+    {
+        "id_ksiazki": 1,
+        "tytul": "Wiedźmin",
+        "autor": "Andrzej Sapkowski",
+        "rok_wydania": 1993,
+        "rodzaj": "książka",
+        "ilosc_egzemplarzy": 5,
+        "wydawca": "Wydawnictwo Literackie"
+    },
+    {
+        "id_ksiazki": 2,
+        "tytul": "Harry Potter i Kamień Filozoficzny",
+        "autor": "J.K. Rowling",
+        "rok_wydania": 1997,
+        "rodzaj": "książka",
+        "ilosc_egzemplarzy": 3,
+        "wydawca": "Bloomsbury"
+    },
+    {
+        "id_ksiazki": 3,
+        "tytul": "Władca Pierścieni: Drużyna Pierścienia",
+        "autor": "J.R.R. Tolkien",
+        "rok_wydania": 1954,
+        "rodzaj": "książka",
+        "ilosc_egzemplarzy": 4,
+        "wydawca": "Allen & Unwin"
+    },
+    {
+        "id_ksiazki": 4,
+        "tytul": "Fizyka jądrowa",
+        "autor": "Linder Helmut",
+        "rok_wydania": 1961,
+        "rodzaj": "książka",
+        "ilosc_egzemplarzy": 2,
+        "wydawca": "Wydawnictwo Naukowe PWN"
+    },
+    {
+        "id_ksiazki": 5,
+        "tytul": "CD-Action",
+        "autor": "Redakcja CD-Action",
+        "rok_wydania": 2020,
+        "rodzaj": "czasopismo",
+        "ilosc_egzemplarzy": 10,
+        "wydawca": "Bauer Media"
+    },
+    {
+        "id_ksiazki": 6,
+        "tytul": "Absolute Batman",
+        "autor": "Grant Morrison",
+        "rok_wydania": 2012,
+        "rodzaj": "komiks",
+        "ilosc_egzemplarzy": 6,
+        "wydawca": "DC Comics"
+    }
+]
