@@ -1,12 +1,17 @@
 import json
+from pathlib import Path
+
+BASEDIR = Path(__file__).resolve().parent.parent #przejscie do glownego folderu
+sciezka_do_db = BASEDIR / "database"
+
 
 def wczytaj_dane_katalogu():
-    with open("db_k.json", "r", encoding="utf-8") as plik:
+    with open(sciezka_do_db / "db_k.json", "r", encoding="utf-8") as plik:
         dane = json.load(plik)
     return dane
 
 def wczytaj_dane_uzytkownikow():
-    with open("db_u.json", "r", encoding="utf-8") as plik:
+    with open(sciezka_do_db / "db_u.json", "r", encoding="utf-8") as plik:
         dane = json.load(plik)
     return dane
 
@@ -32,10 +37,10 @@ def rejestracja(dane_uzytkownikow):
     
 
 def dodanie_uzytkownika(uzytkownik):
-    with open("db_u.json", "r", encoding="utf-8") as plik:
+    with open(sciezka_do_db / "db_u.json", "r", encoding="utf-8") as plik:
         dane = json.load(plik)
     dane.append(uzytkownik)
-    with open("db_u.json", "w", encoding="utf-8") as plik:
+    with open(sciezka_do_db / "db_u.json", "w", encoding="utf-8") as plik:
         json.dump(dane, plik, indent=4, ensure_ascii=False)
 
 

@@ -5,13 +5,18 @@
         "role": "admin"
     },
     {
-        "login": "000001",
+        "login": "000002",
         "password": "haslo1234",
         "role": "user"
     },
     {
         "login": "000003",
         "password": "password123",
+        "role": "user"
+    },
+    {
+        "login": "000004",
+        "password": "4321",
         "role": "user"
     }
 ]
