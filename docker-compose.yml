@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  database:
+    image: alpine
+    container_name: biblioteka_baza
+    volumes:
+      - ./database:/dane_json
+    command: tail -f /dev/null
+  
+  backend:
+    build: ./backend
+    container_name: biblioteka_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./database:/app/database
+    depends_on:
+      - database
+  
+  frontend:
+    build: ./frontend
+    container_name: biblioteka_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

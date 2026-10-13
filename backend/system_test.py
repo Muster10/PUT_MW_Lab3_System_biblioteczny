@@ -1,20 +1,28 @@
 import json
-from pathlib import Path
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-BASEDIR = Path(__file__).resolve().parent.parent #przejscie do glownego folderu
-sciezka_do_db = BASEDIR / "database"
+app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def wczytaj_dane_katalogu():
-    with open(sciezka_do_db / "db_k.json", "r", encoding="utf-8") as plik:
+    with open("/app/database/db_k.json", "r", encoding="utf-8") as plik:
         dane = json.load(plik)
     return dane
 
 def wczytaj_dane_uzytkownikow():
-    with open(sciezka_do_db / "db_u.json", "r", encoding="utf-8") as plik:
+    with open("/app/database/db_u.json", "r", encoding="utf-8") as plik:
         dane = json.load(plik)
     return dane
 
+'''
 def rejestracja(dane_uzytkownikow):
     print("\nREJESTRACJA\n")
     imie = input("Wprowadź imię: ")
@@ -34,16 +42,16 @@ def rejestracja(dane_uzytkownikow):
             }
             dodanie_uzytkownika(user)
             return True
-    
+'''
 
 def dodanie_uzytkownika(uzytkownik):
-    with open(sciezka_do_db / "db_u.json", "r", encoding="utf-8") as plik:
+    with open("/app/database/db_u.json", "r", encoding="utf-8") as plik:
         dane = json.load(plik)
     dane.append(uzytkownik)
-    with open(sciezka_do_db / "db_u.json", "w", encoding="utf-8") as plik:
+    with open("/app/database/db_u.json", "w", encoding="utf-8") as plik:
         json.dump(dane, plik, indent=4, ensure_ascii=False)
 
-
+'''
 def logowanie(dane_uzytkownikow):
     print("\nLOGOWANIE\n")
     login = input("Wprowadź numer karty czytelniczej: ")
@@ -62,26 +70,9 @@ def logowanie(dane_uzytkownikow):
             rejestracja()
         case 3:
             exit()
+'''
 
-
-def menu_glowne():
-    katalog = wczytaj_dane_katalogu()
-    uzytkownicy = wczytaj_dane_uzytkownikow()
-    status = False #niezalogowany
-    while status != True:
-        print("Witaj w bibliotece!")
-        print("1. Zaloguj się")
-        print("2. Zarejestruj się")
-        print("3. Wyjdź")
-        wybor = input("\nWybierz opcję: ")
-        if wybor == "1":
-            status = logowanie(uzytkownicy)
-        elif wybor == "2":
-            status = rejestracja(uzytkownicy)
-        elif wybor == "3":
-            exit()
-        else:
-            print("Nieprawidłowy wybór. Spróbuj ponownie.")
-
-if __name__ == "__main__":
-    menu_glowne()
+@app.get("/api/katalog")
+def pobierz_katalog(): #frontend wysyła zapytanie GET na endpoint /api/katalog, a backend odpowiada danymi katalogu w formacie JSON
+    dane_katalogu = wczytaj_dane_katalogu()
+    return dane_katalogu
