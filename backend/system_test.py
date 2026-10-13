@@ -72,7 +72,7 @@ def logowanie(dane_uzytkownikow):
             exit()
 '''
 
-@app.get("/api/katalog")
-def pobierz_katalog(): #frontend wysyła zapytanie GET na endpoint /api/katalog, a backend odpowiada danymi katalogu w formacie JSON
+@app.get("/api/ksiazki")
+def pobierz_ksiazki(): #frontend wysyła zapytanie GET na endpoint /api/ksiazki, a backend odpowiada danymi katalogu w formacie JSON
     dane_katalogu = wczytaj_dane_katalogu()
     return dane_katalogu
