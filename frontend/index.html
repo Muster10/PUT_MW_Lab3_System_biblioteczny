@@ -1,32 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteka Omnibus</title>
+    <link rel="icon" href="Logo.png" type="image/png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="baner">
-            <h1>Biblioteka Omnibus</h1>
+            <div class="baner-left">
+                <img src="Logo.png" alt="Logo Omnibus" class="Logo">
+                <h1>Biblioteka Omnibus</h1>
+            </div>
+            <div class="baner-right">
+                <input type="button" value="Zaloguj się" class="btn btn-light">
+                <input type="button" value="Zarejestruj się" class="btn btn-outline">
+            </div>
         </div>
         <div class="main">
             <div class="left">
-
+                <input type="button" value="Pokaż listę książek" onclick="PobierzKatalog()" class="btn btn-red">
+                <div id="katalog"></div>
             </div>
             <div class="middle">
-                <input type="button" value="Pokaż listę książek" onclick="PobierzKatalog()">
-                <div id="katalog"></div>
-                <script src="script.js"></script>
+                
+                
             </div>
             <div class="right">
 
             </div>
         </div>
         <div class="footer">
-    
+            <p>Autorzy : Bartosz Hauff i Adam Musiał</p>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>

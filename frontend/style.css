@@ -1,11 +1,202 @@
-.baner {
-    background-color: red;
-    width: 100%;
-    
+* {
+    box-sizing: border-box;
 }
-.baner h1 {
-    text-align: center;
-    font-size: 500%;
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f6;
     font-family: Arial, Helvetica, sans-serif;
-    margin: 0px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.baner {
+    background: linear-gradient(135deg, #8b131b, #4a070b);
+    color: white;
+    width: 100%;
+    padding: 20px 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.baner-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.Logo {
+    width: 55px;
+    height: 55px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.baner h1 {
+    font-size: 35px;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.baner-right {
+    display: flex;
+    gap: 12px;
+}
+
+.main {
+    display: flex;
+    gap: 25px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 0 20px;
+    flex: 1;
+}
+
+.left, .middle, .right {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    min-height: 300px;
+}
+
+.left {
+    width: 25%;
+    text-align: center;
+}
+
+.middle {
+    width: 50%;
+    text-align: center;
+}
+
+.right {
+    width: 25%;
+}
+
+.btn {
+    padding: 10px 22px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.btn-red {
+    background-color: #9e1b24;
+    color: white;
+}
+
+.btn-red:hover {
+    background-color: #6e1017;
+}
+
+.btn-light {
+    background-color: #ffffff;
+    color: #8b131b;
+}
+
+.btn-light:hover {
+    background-color: #f0dada;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+#katalog {
+    margin-top: 20px;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 100%;
+    gap: 15px;
+    color: #555;
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+#katalog::-webkit-scrollbar {
+    width: 8px;
+}
+
+#katalog::-webkit-scrollbar-track {
+    background-color: #f4e4e5;
+    border-radius: 10px;
+}
+
+#katalog::-webkit-scrollbar-thumb {
+    background-color: #9e1b24;
+    border-radius: 10px;
+}
+
+#katalog::-webkit-scrollbar-thumb:hover {
+    background-color: #6e1017;
+}
+.ksiazka-karta {
+    background-color: #fdfbfc;
+    border: 1px solid #efe6e7;
+    border-left: 5px solid #9e1b24;
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-left-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ksiazka-karta:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(139, 19, 27, 0.14);
+    border-left-color: #4a070b;
+}
+
+#katalog h3 {
+    margin: 0 0 10px 0;
+    color: #8b131b;
+    font-size: 18px;
+    line-height: 130%;
+}
+
+#katalog p {
+    margin: 4px 0;
+    color: #333333;
+    font-size: 15px;
+}
+
+#katalog p:last-of-type {
+    margin-top: 12px;
+    align-self: flex-start;
+    background-color: #f4e4e5;
+    color: #7a1219;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.footer {
+    background-color: #3b080b;
+    color: #e0cbd0;
+    width: 100%;
+    min-height: 80px;
+    padding: 20px;
+    text-align: center;
 }

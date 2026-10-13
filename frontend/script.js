@@ -10,12 +10,12 @@ async function PobierzKatalog() {
 
         ksiazki.forEach(ksiazka => {
                     let kafelek = document.createElement("div");
+                    kafelek.className = "ksiazka-karta";
                     
                     kafelek.innerHTML = `
     <h3>${ksiazka.tytul}</h3>
     <p>Autor: <b>${ksiazka.autor}</b></p>
     <p>ID: ${ksiazka.id_ksiazki}</p>
-    <hr>
 `;
                     
                     pojemnik.appendChild(kafelek);
