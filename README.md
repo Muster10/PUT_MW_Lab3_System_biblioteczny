@@ -2,7 +2,7 @@
 
 Wykonujący: Bartosz Hauff, Adam Musiał
 
-Ostatnia aktualizacja: 10.10.2026
+Ostatnia aktualizacja: 20.10.2026
 
 ## Frontend
 

@@ -1,5 +1,3 @@
-# Wybieramy super-lekki serwer internetowy Nginx
 FROM nginx:alpine
-
-# Kopiujemy Twoje pliki HTML i CSS do folderu, z którego Nginx wyświetla strony
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY . /usr/share/nginx/html

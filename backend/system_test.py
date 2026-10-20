@@ -1,16 +1,8 @@
 import json
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+app = FastAPI(title="Biblioteka", root_path="/api")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 def wczytaj_dane_katalogu():
     with open("/app/database/db_k.json", "r", encoding="utf-8") as plik:
@@ -72,7 +64,11 @@ def logowanie(dane_uzytkownikow):
             exit()
 '''
 
-@app.get("/api/ksiazki")
+@app.get("/ksiazki")
 def pobierz_ksiazki(): #frontend wysyła zapytanie GET na endpoint /api/ksiazki, a backend odpowiada danymi katalogu w formacie JSON
     dane_katalogu = wczytaj_dane_katalogu()
     return dane_katalogu
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}

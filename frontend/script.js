@@ -3,7 +3,7 @@ async function PobierzKatalog() {
     pojemnik.innerHTML = "Pobieranie danych z bazy...";
 
     try {
-        let response = await fetch("http://localhost:8000/api/ksiazki");
+        let response = await fetch("/api/ksiazki");
         let ksiazki = await response.json();
 
         pojemnik.innerHTML = "";
