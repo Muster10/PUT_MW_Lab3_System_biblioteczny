@@ -1,23 +1,26 @@
 services:
   database:
-    image: alpine
+    image: postgres:16-alpine
     container_name: biblioteka_baza
+    environment:
+      POSTGRES_USER: biblioteka
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?brak pliku .env}
+      POSTGRES_DB: biblioteka
     volumes:
-      - ./database:/dane_json
-    command: tail -f /dev/null
+      - pgdata:/var/lib/postrgresql/data
     healthcheck:
-      test: ["CMD", "ls", "/dane_json"]
+      test: ["CMD", "pg_isready", "-U", "biblioteka"]
       interval: 2s
   
   backend:
     build: ./backend
     container_name: biblioteka_backend
-    volumes:
-      - ./database:/app/database
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://biblioteka:${POSTGRES_PASSWORD}@database:5432/biblioteka
     depends_on:
       database:
         condition: service_healthy
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://localhost:8000/health')"]
       interval: 5s
@@ -29,3 +32,6 @@ services:
       - "80:80"
     depends_on:
       - backend
+
+volumes:
+  pgdata:
