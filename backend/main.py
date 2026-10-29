@@ -1,7 +1,7 @@
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 
 app = FastAPI(title="Biblioteka", root_path="/api")
@@ -56,6 +56,20 @@ def pobierz_ksiazki():
     conn.close()
     return dane
 
+@app.get("/ksiazki/{ksiazka_id}")
+def pobierz_ksiazke(ksiazka_id: int):
+    conn = polacz_z_db()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute("SELECT * FROM ksiazki where id=%s;",(ksiazka_id,))
+    dane = cursor.fetchone()
+    if not dane:
+            cursor.close()
+            conn.close()
+            raise HTTPException(status_code=404, detail="Książka o podanym ID nie istnieje")
+    cursor.close()
+    conn.close()
+    return dane
+
 @app.get("/uzytkownicy")
 def pobierz_uzytkownikow():
     conn = polacz_z_db()
@@ -73,6 +87,9 @@ def health_check():
 
 @app.post("/ksiazki", status_code=201)
 def dodaj_ksiazke(ksiazka: NowaKsiazka):
+    if ksiazka.tytul.strip() == "" or ksiazka.autor.strip() == "":
+        raise HTTPException(status_code=400, detail="Tytuł albo autor nie może być pustym polem")
+
     conn = polacz_z_db()
     cursor = conn.cursor()
     cursor.execute(
