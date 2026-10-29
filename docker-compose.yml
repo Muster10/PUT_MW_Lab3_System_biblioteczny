@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?brak pliku .env}
       POSTGRES_DB: biblioteka
     volumes:
-      - pgdata:/var/lib/postrgresql/data
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "biblioteka"]
       interval: 2s
@@ -31,7 +31,8 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
 volumes:
   pgdata:
