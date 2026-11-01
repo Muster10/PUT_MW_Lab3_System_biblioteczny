@@ -2,7 +2,7 @@
 
 Wykonujący: Bartosz Hauff, Adam Musiał
 
-Ostatnia aktualizacja: 11.11.2026
+Ostatnia aktualizacja: 1.11.2026
 
 ## Frontend
 
@@ -24,11 +24,11 @@ Ostatnia aktualizacja: 11.11.2026
 | `GET` | `/ksiazki` | Pobiera listę wszystkich książek | `200 OK` |
 | `GET` | `/ksiazki/{ksiazka_id}` | Pobiera pojedynczą książkę po ID | `200 OK`, `404 Not Found` |
 | `POST` | `/ksiazki` | Dodaje nową książkę do bazy | `201 Created`, `400 Bad Request` |
+| `PUT` | `/ksiazki/{ksiazka_id}` | Edytuje pojedynczą książkę po ID | `200 OK`, `404 Not Found` |
 | `DELETE` | `/ksiazki/{ksiazka_id}` | Usuwa książkę o podanym ID | `200 OK`, `404 Not Found` |
 | `GET` | `/uzytkownicy` | Pobiera listę użytkowników | `200 OK` |
+| `POST` | `/uzytkownicy` | Dodaje nowe konto do bazy | `201 Created`, `400 Bad Request` |
 | `GET` | `/health` | Sprawdza kondycję serwisu | `200 OK` |
-| `PUT` | `/ksiazki/{ksiazka_id}` | Edytuje pojedynczą książkę po ID | `200 OK`, `404 Not Found` |
-| `POST` | `/uzytkownicy` | Dodaje nowe konto do bazy | `200 OK`, `400 Bad Request` |
 
 ---
 
@@ -74,6 +74,16 @@ Dodaje nową książkę (zwraca kod `201` lub `400`, gdy pola są puste).
 }
 ```
 
+#### `PUT /ksiazki/{ksiazka{id}`
+Aktualizuje dane książki o podanym ID:
+```json
+{
+  "id": 1,
+  "tytul": "Wiedźmin - Poprawiony",
+  "autor": "Andrzej Sapkowski"
+}
+```
+
 ####  `DELETE /ksiazki/{ksiazka_id}`
 Usuwa książkę o podanym ID (lub zwraca kod `404`):
 ```json
@@ -89,6 +99,18 @@ Zwraca listę użytkowników:
 [
   {
     "id": 1,
+    "login": "admin",
+    "rola": "admin"
+  }
+]
+```
+
+####  `POST /uzytkownicy`
+Zwraca listę użytkowników:
+```json
+[
+  {
+    "id": 2,
     "login": "jan123",
     "rola": "user"
   }
@@ -105,5 +127,5 @@ Sprawdza kondycję serwisu:
 
 ## Database
 
-- Baza danych z pozycjami bibliotecznymi
-- Baza danych z informacjami o kontach użytkowników
+- Relacyjna baza danych PostgreSQL zarządzana wewnątrz kontenera Docker.
+- Automatycznie generowane tabele ksiazki oraz uzytkownicy z wbudowanym mechanizmem tworzenia konta administratora przy starcie systemu.
