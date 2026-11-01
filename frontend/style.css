@@ -200,3 +200,101 @@ html, body {
     padding: 20px;
     text-align: center;
 }
+
+.kontener-rejestracji {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.kontener-rejestracji input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.baner-right a.btn {
+    text-decoration: none;
+    color: white;
+    border: 2px solid white;
+    background-color: transparent;
+    padding: 8px 20px;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: bold;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.baner-right a.btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.kontener-rejestracji .btn {
+    background-color: #5c0a0a;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.kontener-rejestracji .btn:hover {
+    background-color: #3d0606;
+}
+
+.kontener-rejestracji a {
+    color: #5c0a0a;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.kontener-rejestracji a:hover {
+    text-decoration: underline;
+}
+
+.haslo-kontener {
+    position: relative;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.haslo-kontener input {
+    margin: 0;
+    width: 100%;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+.btn-oko {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.btn-oko svg {
+    transition: stroke 0.3s;
+}
+
+.btn-oko:hover svg {
+    stroke: #3d0606;
+}

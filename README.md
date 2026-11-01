@@ -2,7 +2,7 @@
 
 Wykonujący: Bartosz Hauff, Adam Musiał
 
-Ostatnia aktualizacja: 20.10.2026
+Ostatnia aktualizacja: 11.11.2026
 
 ## Frontend
 
@@ -27,6 +27,8 @@ Ostatnia aktualizacja: 20.10.2026
 | `DELETE` | `/ksiazki/{ksiazka_id}` | Usuwa książkę o podanym ID | `200 OK`, `404 Not Found` |
 | `GET` | `/uzytkownicy` | Pobiera listę użytkowników | `200 OK` |
 | `GET` | `/health` | Sprawdza kondycję serwisu | `200 OK` |
+| `PUT` | `/ksiazki/{ksiazka_id}` | Edytuje pojedynczą książkę po ID | `200 OK`, `404 Not Found` |
+| `POST` | `/uzytkownicy` | Dodaje nowe konto do bazy | `200 OK`, `400 Bad Request` |
 
 ---
 

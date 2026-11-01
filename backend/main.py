@@ -14,6 +14,10 @@ class NowaKsiazka(BaseModel):
     tytul: str
     autor: str
 
+class NowyUzytkownik(BaseModel):
+    login: str
+    haslo: str
+
 @app.on_event("startup")
 def utworz_tabele():
     conn = polacz_z_db()
@@ -40,10 +44,16 @@ def utworz_tabele():
         );
     """)
 
+    cursor.execute("SELECT id FROM uzytkownicy WHERE login = 'admin';")
+    if not cursor.fetchone():
+        cursor.execute(
+            "INSERT INTO uzytkownicy (login, haslo, rola) VALUES (%s, %s, %s);",
+            ('admin', 'admin1', 'admin')
+        )
+
     conn.commit()
     cursor.close()
     conn.close()
-
 
 @app.get("/ksiazki")
 def pobierz_ksiazki():
@@ -120,7 +130,43 @@ def usun_ksiazke(ksiazka_id: int):
 
     return {"status": "sukces", "usuniete_id": usunieta[0]}
 
+@app.put("/ksiazki/{ksiazka_id}")
+def edytuj_ksiazke(ksiazka_id: int, ksiazka: NowaKsiazka):
+    conn = polacz_z_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE ksiazki SET tytul = %s, autor = %s WHERE id = %s RETURNING id;",
+        (ksiazka.tytul, ksiazka.autor, ksiazka_id))
+    zaktualizowana = cursor.fetchone()
 
+    if not zaktualizowana:
+        cursor.close()
+        conn.close()
+        raise HTTPException(status_code=404, detail="Książka o podanym ID nie istnieje")
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return {"id": ksiazka_id, "tytul": ksiazka.tytul, "autor": ksiazka.autor}
+
+@app.post("/uzytkownicy", status_code=201)
+def zarejestruj_uzytkownika(uzytkownik: NowyUzytkownik):
+    conn = polacz_z_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id FROM uzytkownicy WHERE login = %s;", (uzytkownik.login,))
+    if cursor.fetchone():
+        cursor.close()
+        conn.close()
+        raise HTTPException(status_code=400, detail="Ten login jest już zajęty")
+
+    cursor.execute("INSERT INTO uzytkownicy (login, haslo) VALUES (%s, %s) RETURNING id, rola;",
+        (uzytkownik.login, uzytkownik.haslo))
+
+    wynik = cursor.fetchone()
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return {"id": wynik[0], "login": uzytkownik.login, "rola": wynik[1]}
 
 # docker-compose up
 # docker-compose down

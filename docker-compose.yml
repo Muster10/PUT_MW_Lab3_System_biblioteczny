@@ -2,6 +2,8 @@ services:
   database:
     image: postgres:16-alpine
     container_name: biblioteka_baza
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: biblioteka
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?brak pliku .env}
