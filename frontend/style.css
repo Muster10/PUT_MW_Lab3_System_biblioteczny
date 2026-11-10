@@ -54,7 +54,7 @@ html, body {
 .main {
     display: flex;
     gap: 25px;
-    max-width: 1200px;
+    
     width: 100%;
     margin: 40px auto;
     padding: 0 20px;
@@ -70,17 +70,17 @@ html, body {
 }
 
 .left {
-    width: 25%;
+    width: 30%;
     text-align: center;
 }
 
 .middle {
-    width: 50%;
+    width: 40%;
     text-align: center;
 }
 
 .right {
-    width: 25%;
+    width: 30%;
 }
 
 .btn {

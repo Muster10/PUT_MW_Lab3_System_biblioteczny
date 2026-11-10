@@ -21,14 +21,56 @@
         </div>
         <div class="main">
             <div class="left">
-                <input type="button" value="Pokaż listę książek" onclick="PobierzKatalog()" class="btn btn-red">
+                <h2>Katalog pozycji</h2>
+                <input type="button" value="Pokaż / Odśwież katalog" onclick="PobierzKatalog()" class="btn btn-red">
+
+                <div class="filtry-box">
+                    <label for="filtr-rodzaj">Rodzaj pozycji:</label>
+                    <select id="filtr-rodzaj" onchange="FiltrujKatalog()">
+                        <option value="wszystkie">Wszystkie</option>
+                        <option value="Książka">Książka</option>
+                        <option value="Czasopismo">Czasopismo</option>
+                        <option value="Komiks">Komiks</option>
+                    </select>
+
+                    <label for="filtr-rok">Rok wydania (od):</label>
+                    <input type="number" id="filtr-rok" placeholder="np. 1990" oninput="FiltrujKatalog()">
+                </div>
                 <div id="katalog"></div>
             </div>
             <div class="middle">
-                
+                <h2>Szczegóły pozycji</h2>
+                <div id="szczegoly-pozycji">
+                    <p class="info-puste">Kliknij pozycję z katalogu po lewej stronie, aby zobaczyć jej zdjęcie, szczegóły oraz opcje wypożyczenia lub rezerwacji.</p>
+                </div>
                 
             </div>
             <div class="right">
+                <div id="strefa-konta">
+                    <h2>Twoje Konto</h2>
+                    <div id="dane-profilu">
+                        <p class="info-puste">Zaloguj się, aby zobaczyć swój profil, wypożyczone książki i stan zaległości.</p>
+                    </div>
+                </div>
+
+                <!-- PANEL BIBLIOTEKARZA (widoczny dla roli admin) -->
+                <div id="panel-admina" style="display: none;">
+                    <hr>
+                    <h2>Panel Bibliotekarza</h2>
+                    <form id="formularz-ksiazki" onsubmit="DodajLubEdytujKsiazke(event)">
+                        <input type="hidden" id="edytuj-id">
+                        <input type="text" id="tytul-ksiazki" placeholder="Tytuł pozycji" required>
+                        <input type="text" id="autor-ksiazki" placeholder="Autor" required>
+                        <input type="number" id="rok-ksiazki" placeholder="Rok wydania (np. 2020)" required>
+                        <select id="rodzaj-ksiazki">
+                            <option value="Książka">Książka</option>
+                            <option value="Czasopismo">Czasopismo</option>
+                            <option value="Komiks">Komiks</option>
+                        </select>
+                        <button type="submit" id="btn-zapisz-ksiazke" class="btn btn-red">Dodaj pozycję</button>
+                    </form>
+                    <p id="komunikat-admin"></p>
+                </div>
 
             </div>
         </div>
