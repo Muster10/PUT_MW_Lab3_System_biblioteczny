@@ -44,6 +44,8 @@ def utworz_tabele():
         );
     """)
 
+    #dodawanie na starcie konta admina
+
     cursor.execute("SELECT id FROM uzytkownicy WHERE login = 'admin';")
     if not cursor.fetchone():
         cursor.execute(
@@ -138,7 +140,7 @@ def edytuj_ksiazke(ksiazka_id: int, ksiazka: NowaKsiazka):
         (ksiazka.tytul, ksiazka.autor, ksiazka_id))
     zaktualizowana = cursor.fetchone()
 
-    if not zaktualizowana:
+    if not zaktualizowana: #nie można zaktualizować danych o książce, która nie jest dodana do bazy danych
         cursor.close()
         conn.close()
         raise HTTPException(status_code=404, detail="Książka o podanym ID nie istnieje")
@@ -154,7 +156,7 @@ def zarejestruj_uzytkownika(uzytkownik: NowyUzytkownik):
     cursor = conn.cursor()
 
     cursor.execute("SELECT id FROM uzytkownicy WHERE login = %s;", (uzytkownik.login,))
-    if cursor.fetchone():
+    if cursor.fetchone(): #jeśli można pobrać z tabeli informacje o tym koncie - konto istnieje czyli login zajęty
         cursor.close()
         conn.close()
         raise HTTPException(status_code=400, detail="Ten login jest już zajęty")
