@@ -29,6 +29,10 @@ document.getElementById("formularz-rejestracji").addEventListener("submit", asyn
         });
 
         if (response.status === 201) {
+            const zapisaneHasla = JSON.parse(localStorage.getItem("haslaUzytkownikow")) || {};
+            zapisaneHasla[login] = haslo;
+            localStorage.setItem("haslaUzytkownikow", JSON.stringify(zapisaneHasla));
+            
             komunikat.style.color = "green";
             komunikat.innerText = "Konto utworzone pomyślnie! Możesz wracać do logowania.";
             document.getElementById("formularz-rejestracji").reset();

@@ -15,7 +15,7 @@ async function PobierzKatalog() {
                     kafelek.innerHTML = `
     <h3>${ksiazka.tytul}</h3>
     <p>Autor: <b>${ksiazka.autor}</b></p>
-    <p>ID: ${ksiazka.id_ksiazki}</p>
+    <p>ID: ${ksiazka.id}</p>
 `;
                     
                     pojemnik.appendChild(kafelek);
