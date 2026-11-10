@@ -18,6 +18,10 @@ class NowyUzytkownik(BaseModel):
     login: str
     haslo: str
 
+class NoweWypozyczenie(BaseModel):
+    ksiazka_id: int
+    uzytkownik_id: int
+
 @app.on_event("startup")
 def utworz_tabele():
     conn = polacz_z_db()
@@ -32,6 +36,15 @@ def utworz_tabele():
             autor VARCHAR(255) NOT NULL
         );
     """)
+
+    #dodawanie na starcie książki początkowej
+
+    cursor.execute("SELECT COUNT(*) FROM ksiazki;")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute(
+            "INSERT INTO ksiazki (id, tytul, autor) VALUES (%s, %s, %s);",
+            (1, 'Biblia', 'Jan Gutenberg')
+        )
 
     #tabela użytkowników
 
@@ -52,6 +65,20 @@ def utworz_tabele():
             "INSERT INTO uzytkownicy (login, haslo, rola) VALUES (%s, %s, %s);",
             ('admin', 'admin1', 'admin')
         )
+
+    #tabela wypożyczeń, REFERENCES tworzy klucz obcy, ON DELETE CASCADE powoduje efekt kaskadowy (usunięcie książki z tabeli usuwa z tej tabeli wpisy dotyczące tej książki) - zabezpieczenie przed błędami
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS wypozyczenia (
+            id SERIAL PRIMARY KEY,
+            ksiazka_id INTEGER NOT NULL REFERENCES ksiazki(id) ON DELETE CASCADE,
+            uzytkownik_id INTEGER NOT NULL REFERENCES uzytkownicy(id) ON DELETE CASCADE,
+            data_wypozyczenia TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    """)
+
+    #synchronizacja licznika dla tabeli książek
+    cursor.execute("SELECT setval('ksiazki_id_seq', (SELECT MAX(id) FROM ksiazki));")
 
     conn.commit()
     cursor.close()
@@ -95,7 +122,16 @@ def pobierz_uzytkownikow():
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok"}
+    try:
+        conn = polacz_z_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1;")
+        cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return {"status": "ok"}
+    except Exception as e:
+        raise HTTPException(status_code=503, detail="Baza danych nie odpowiada")
 
 @app.post("/ksiazki", status_code=201)
 def dodaj_ksiazke(ksiazka: NowaKsiazka):
