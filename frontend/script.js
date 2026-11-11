@@ -131,14 +131,18 @@ async function PokazSzczegoly(idKsiazki) {
             }
         }
         pojemnikSzczegolow.innerHTML = `
-            <div class="ksiazka-karta">
-                <img src="Logo.png" alt="Okładka" class="Logo">
+                <div class="ksiazka-karta">
+                    <div class="okladka-ksiazki">
+                    <img src="Logo.png" alt="Logo" class="okladka-logo">
+                    <div class="okladka-tytul">${ksiazka.tytul}</div>
+                    <div class="okladka-autor">${ksiazka.autor}</div>
+                </div>
                 <h3>${ksiazka.tytul}</h3>
                 <p>Autor: <b>${ksiazka.autor}</b></p>
                 <p>Rodzaj: ${rodzaj} | Rok: ${rok}</p>
                 <p>ID: ${ksiazka.id}</p>
-                <input type="button" value="Wypożycz" onclick="WypozyczLubZarezerwuj('${ksiazka.id}', 'wypożyczono')" class="btn btn-red">
-                <input type="button" value="Zarezerwuj" onclick="WypozyczLubZarezerwuj('${ksiazka.id}', 'zarezerwowano')" class="btn btn-red">
+                <input type="button" value="Wypożycz" onclick="WypozyczLubZarezerwuj(${ksiazka.id}, 'wypożyczono')" class="btn btn-red">
+                <input type="button" value="Zarezerwuj" onclick="WypozyczLubZarezerwuj(${ksiazka.id}, 'zarezerwowano')" class="btn btn-red">
                 ${przyciskiAdmina}
             </div>
         `;

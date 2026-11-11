@@ -411,3 +411,42 @@ html, body {
     text-align: center;
     margin-top: 10px;
 }
+
+
+
+.okladka-ksiazki {
+    width: 160px;
+    height: 220px;
+    background: linear-gradient(135deg, #8b131b, #4a070b);
+    border-left: 14px solid #2b0406;
+    border-radius: 4px 12px 12px 4px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    margin: 0px auto 15px auto;
+    padding: 15px 10px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.okladka-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+}
+
+.okladka-tytul {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 0px;
+    width: 100%;
+}
+
+.okladka-autor {
+    font-size: 12px;
+    color: #e0cbd0;
+}
