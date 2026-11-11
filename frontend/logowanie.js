@@ -6,39 +6,19 @@ document.getElementById("formularz-logowania").addEventListener("submit", async 
     const komunikat = document.getElementById("komunikat");
 
     try {
-        // Pobieramy listę użytkowników z backendu
-        const response = await fetch("/api/uzytkownicy");
+        const response = await fetch("/api/logowanie", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ login: wpisanyLogin, haslo: wpisaneHaslo })
+        });
         if (!response.ok) {
-            throw new Error("Błąd pobierania danych");
-        }
-
-        const uzytkownicy = await response.json();
-
-        // Szukamy użytkownika o podanym loginie
-        const znaleziony = uzytkownicy.find(u => u.login === wpisanyLogin);
-
-        if (!znaleziony) {
             komunikat.style.color = "red";
-            komunikat.innerText = "Użytkownik o takim loginie nie istnieje.";
+            komunikat.innerText = "Nieprawidłowy login lub hasło!";
             return;
         }
-
-        const zapisaneHasla = JSON.parse(localStorage.getItem("haslaUzytkownikow")) || {};
-
-        if (znaleziony.login === "admin") {
-            if (wpisaneHaslo !== "admin1") {
-                komunikat.style.color = "red";
-                komunikat.innerText = "Nieprawidłowe hasło!";
-                return;
-            }
-        } 
-        else {
-            if (zapisaneHasla[znaleziony.login] !== wpisaneHaslo) {
-                komunikat.style.color = "red";
-                komunikat.innerText = "Nieprawidłowe hasło!";
-                return;
-            }
-        }
+        const znaleziony = await response.json();
 
         // Zapisujemy zalogowanego użytkownika w pamięci przeglądarki
         localStorage.setItem("zalogowanyUzytkownik", JSON.stringify(znaleziony));

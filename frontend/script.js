@@ -1,4 +1,4 @@
-function SprawdzSesje() {
+async function SprawdzSesje() {
     let tekstUzytkownika = localStorage.getItem("zalogowanyUzytkownik");
 
     let powitanie = document.getElementById("powitanie-uzytkownika");
@@ -20,10 +20,16 @@ function SprawdzSesje() {
             panelAdmina.style.display = "block";
         }
 
-        let wypozyczone = localStorage.getItem("wypozyczone_" + uzytkownik.login);              ////!!!!!
-
-        if (wypozyczone === null) {
-            wypozyczone = "Brak wypożyczonych pozycji";
+        let wypozyczone = "Brak wypożyczonych pozycji";
+        let response = await fetch("/api/wypozyczenia/" + uzytkownik.id);
+        if (response.ok) {
+            let lista = await response.json();
+            if (lista.length > 0) {
+                wypozyczone = "";
+                lista.forEach(wpis => {
+                    wypozyczone += wpis.tytul + " (" + wpis.typ + "), ";
+                });
+            }
         }
 
         daneProfilu.innerHTML = `
@@ -55,13 +61,13 @@ async function PobierzKatalog() {
         pojemnik.innerHTML = "";
 
         ksiazki.forEach(ksiazka => {
-                    let rok = localStorage.getItem("rok_" + ksiazka.id);                    ////!!!!!
-                    let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id);              ////!!!!!
- 
-                    if (rok ===null) {
+                    let rok = ksiazka.rok;
+                    let rodzaj = ksiazka.rodzaj;
+
+                    if (!rok) {
                         rok = "Brak danych";
                     }
-                    if (rodzaj === null) {
+                    if (!rodzaj) {
                         rodzaj = "Brak danych";
                     }
 
@@ -103,13 +109,13 @@ async function PokazSzczegoly(idKsiazki) {
         let response = await fetch("/api/ksiazki/" + idKsiazki);
         let ksiazka = await response.json();
 
-        let rok = localStorage.getItem("rok_" + ksiazka.id);                                ////!!!!!
-        let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id);                          ////!!!!!
+        let rok = ksiazka.rok;
+        let rodzaj = ksiazka.rodzaj;
 
-        if (rok ===null) {
+        if (!rok) {
             rok = "Brak danych";
         }
-        if (rodzaj === null) {
+        if (!rodzaj) {
             rodzaj = "Brak danych";
         }
 
@@ -131,8 +137,8 @@ async function PokazSzczegoly(idKsiazki) {
                 <p>Autor: <b>${ksiazka.autor}</b></p>
                 <p>Rodzaj: ${rodzaj} | Rok: ${rok}</p>
                 <p>ID: ${ksiazka.id}</p>
-                <input type="button" value="Wypożycz" onclick="WypozyczLubZarezerwuj('${ksiazka.tytul}', 'wypożyczono')" class="btn btn-red">
-                <input type="button" value="Zarezerwuj" onclick="WypozyczLubZarezerwuj('${ksiazka.tytul}', 'zarezerwowano')" class="btn btn-red">
+                <input type="button" value="Wypożycz" onclick="WypozyczLubZarezerwuj('${ksiazka.id}', 'wypożyczono')" class="btn btn-red">
+                <input type="button" value="Zarezerwuj" onclick="WypozyczLubZarezerwuj('${ksiazka.id}', 'zarezerwowano')" class="btn btn-red">
                 ${przyciskiAdmina}
             </div>
         `;
@@ -143,7 +149,7 @@ async function PokazSzczegoly(idKsiazki) {
     }
 }
 
-function WypozyczLubZarezerwuj(tytulKsiazki,akcja) {
+async function WypozyczLubZarezerwuj(idKsiazki,akcja) {
     let tekstUzytkownika = localStorage.getItem("zalogowanyUzytkownik");
 
     if (tekstUzytkownika === null) {
@@ -151,18 +157,19 @@ function WypozyczLubZarezerwuj(tytulKsiazki,akcja) {
         return;
     }
 
-                                                                    ////!!!!!
     let uzytkownik = JSON.parse(tekstUzytkownika);
-    let klucz = "wypozyczone_" + uzytkownik.login;
-    let obecne = localStorage.getItem(klucz);
-    let nowyWpis = tytulKsiazki + " (" + akcja + ")";
 
-    if (obecne === null) {
-        localStorage.setItem(klucz, nowyWpis);
-    } else {
-        localStorage.setItem(klucz, obecne + ", " + nowyWpis);
-    }
-                                                                    ////!!!!!
+    await fetch("/api/wypozyczenia", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            ksiazka_id: idKsiazki,
+            uzytkownik_id: uzytkownik.id,
+            typ: akcja
+        })
+    });
     SprawdzSesje();
 }
 
@@ -190,14 +197,10 @@ async function DodajLubEdytujKsiazke(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ tytul: tytul, autor: autor })
+            body: JSON.stringify({ tytul: tytul, autor: autor, rok: Number(rok), rodzaj: rodzaj})
         });
 
         if (response.ok) {
-            let dane = await response.json();
-
-            localStorage.setItem("rok_" + dane.id, rok);            ////!!!!!
-            localStorage.setItem("rodzaj_" + dane.id, rodzaj);      ////!!!!!
 
             komunikat.style.color = "green";
             komunikat.innerText = "Zapisano pozycję w bazie!";
@@ -245,5 +248,8 @@ async function UsunKsiazke(idKsiazki) {
 SprawdzSesje();
 
 
-
-//// W przyszłości wszyskie localstorage podmienić oprócz identyfikacji roli użytkownika ,tak żeby było jak najbardziej bezpiecznie!!!! (W miejscach wykrzykników zaznaczone do wymiany)
+// DO ZROBIENIA W BACKENDZIE (main.py) I BAZIE DANYCH:
+// 1. Tabela 'ksiazki' i klasa 'NowaKsiazka': dodać kolumny/pola 'rok' (INTEGER/int) oraz 'rodzaj' (VARCHAR/str) i uwzględnić je w POST /ksiazki oraz PUT /ksiazki/{id}.
+// 2. Endpoint POST /logowanie: przyjąć login i haslo, sprawdzić w tabeli 'uzytkownicy' (WHERE login=%s AND haslo=%s) i zwrócić {id, login, rola} lub kod 401.
+// 3. Tabela 'wypozyczenia' i klasa 'NoweWypozyczenie': dodać kolumnę/pole 'typ' (VARCHAR/str).
+// 4. Endpointy wypożyczeń: dodać POST /wypozyczenia (zapis do tabeli) oraz GET /wypozyczenia/{uzytkownik_id} (SELECT z JOINem tabeli ksiazki zwracający tytul i typ).
