@@ -20,7 +20,7 @@ function SprawdzSesje() {
             panelAdmina.style.display = "block";
         }
 
-        let wypozyczone = localStorage.getItem("wypozyczone_" + uzytkownik.login);
+        let wypozyczone = localStorage.getItem("wypozyczone_" + uzytkownik.login); ////!!!!!
 
         if (wypozyczone === null) {
             wypozyczone = "Brak wypożyczonych pozycji";
@@ -55,9 +55,9 @@ async function PobierzKatalog() {
         pojemnik.innerHTML = "";
 
         ksiazki.forEach(ksiazka => {
-                    let rok = localStorage.getItem("rok_" + ksiazka.id);
-                    let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id);
-
+                    let rok = localStorage.getItem("rok_" + ksiazka.id);  ////!!!!!
+                    let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id); ////!!!!!
+ 
                     if (rok ===null) {
                         rok = "Brak danych";
                     }
@@ -68,9 +68,9 @@ async function PobierzKatalog() {
                     if (wybranyRodzaj !== "wszystkie" && rodzaj !== wybranyRodzaj) {
                         return;
                     }
-                    if (wpisanyRok !== "" && Number(rok) < Number(wpisanyRok)) {
+                    if (wpisanyRok !== "" && (rok === "Brak danych" || Number(rok) < Number(wpisanyRok))) {
                         return;
-                    }
+                        }
                     let kafelek = document.createElement("div");
                     kafelek.className = "ksiazka-karta";
                     
@@ -95,4 +95,56 @@ function FiltrujKatalog() {
     PobierzKatalog();
 }
 
+async function PokazSzczegoly(idKsiazki) {
+    let pojemnikSzczegolow = document.getElementById("szczegoly-pozycji");
+    pojemnikSzczegolow.innerHTML = "Ładowanie szczegółów...";
+
+    try {
+        let response = await fetch("/api/ksiazki/" + idKsiazki);
+        let ksiazka = await response.json();
+
+        let rok = localStorage.getItem("rok_" + ksiazka.id); ////!!!!!
+        let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id); ////!!!!!
+
+        if (rok ===null) {
+            rok = "Brak danych";
+        }
+        if (rodzaj === null) {
+            rodzaj = "Brak danych";
+        }
+
+        let przyciskiAdmina = "";
+        let tekstUzytkownika = localStorage.getItem("zalogowanyUzytkownik");
+        if (tekstUzytkownika !== null) {
+            let uzytkownik = JSON.parse(tekstUzytkownika);
+            if (uzytkownik.rola === "admin") {
+                przyciskiAdmina = `
+                   <input type="button" value="Edytuj" onclick="ZaladujDoEdycji(${ksiazka.id}, '${ksiazka.tytul}', '${ksiazka.autor}')" class="btn btn-red">
+                    <input type="button" value="Usuń" onclick="UsunKsiazke(${ksiazka.id})" class="btn btn-red"> 
+                `;
+            }
+        }
+        pojemnikSzczegolow.innerHTML = `
+            <div class="ksiazka-karta">
+                <img src="Logo.png" alt="Okładka" class="Logo">
+                <h3>${ksiazka.tytul}</h3>
+                <p>Autor: <b>${ksiazka.autor}</b></p>
+                <p>Rodzaj: ${rodzaj} | Rok: ${rok}</p>
+                <p>ID: ${ksiazka.id}</p>
+                <input type="button" value="Wypożycz" onclick="WypozyczLubZarezerwuj('${ksiazka.tytul}', 'wypożyczono')" class="btn btn-red">
+                <input type="button" value="Zarezerwuj" onclick="WypozyczLubZarezerwuj('${ksiazka.tytul}', 'zarezerwowano')" class="btn btn-red">
+                ${przyciskiAdmina}
+            </div>
+        `;
+    }
+    catch (error) {
+        pojemnikSzczegolow.innerHTML = "Wystąpił błąd przy pobieraniu szczegółów";
+        console.log(error);
+    }
+}
+
 SprawdzSesje();
+
+
+
+//// W przyszłości wszyskie localstorage podmienić oprócz identyfikacji roli użytkownika ,tak żeby było jak najbardziej bezpiecznie!!!! (W miejscach wykrzykników)
