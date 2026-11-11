@@ -54,7 +54,7 @@ html, body {
 .main {
     display: flex;
     gap: 25px;
-    
+    max-width: 90%;
     width: 100%;
     margin: 40px auto;
     padding: 0 20px;
@@ -297,4 +297,117 @@ html, body {
 
 .btn-oko:hover svg {
     stroke: #3d0606;
+}
+#powitanie-uzytkownika {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 9px 18px;
+    border-radius: 25px;
+    margin-right: 6px;
+}
+#powitanie-uzytkownika:empty {
+    display: none;
+}
+.baner-right {
+    align-items: center;
+}
+.left h2 , .middle h2 , .right h2 {
+    color: #8b131b;
+    font-size: 22px;
+    margin-top: 0px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f4e4e5;
+}
+.info-puste {
+    color: #777777;
+    font-size: 15px;
+    margin-top: 30px;
+}
+
+.filtry-box {
+    background-color: #fdfbfc;
+    border: 1px solid #efe6e7;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 18px;
+    text-align: left;
+}
+.filtry-box label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #4a070b;
+    margin-bottom: 6px;
+}
+.filtry-box select , .filtry-box input {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+.ksiazka-karta .btn {
+    margin-top: 8px;
+    width: 100%;
+}
+#szczegoly-pozycji .ksiazka-karta {
+    text-align: center;
+    align-items: center;
+    padding: 25px;
+}
+#szczegoly-pozycji .Logo {
+    width: 110px;
+    height: 110px;
+    margin-bottom: 15px;
+}
+#szczegoly-pozycji h3 {
+    margin: 0px 0px 10px 0px;
+    color: #8b131b;
+    font-size: 22px;
+}
+#szczegoly-pozycji p {
+    margin: 5px 0px;
+    color: #333333;
+    font-size: 16px;
+}
+#dane-profilu {
+    background-color: #fdfbfc;
+    border: 1px solid #efe6e7;
+    border-left: 5px solid #9e1b24;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: left;
+}
+#dane-profilu p {
+    margin: 8px 0px;
+    font-size: 15px;
+    color: #333333;
+}
+#panel-admina hr {
+    border: 0px;
+    border-top: 2px solid #f4e4e5;
+    margin: 25px 0px 25px 0px;
+}
+#formularz-ksiazki input , #formularz-ksiazki select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+#formularz-ksiazki .btn {
+    width: 100%;
+    margin-top: 5px;
+}
+#komunikat-admin {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
 }
