@@ -11,12 +11,14 @@
     <div class="container">
         <div class="baner">
             <div class="baner-left">
-                <img src="Logo.png" alt="Logo Omnibus" class="Logo">
+                <img src="Logo.jpg" alt="Logo Omnibus" class="Logo">
                 <h1>Biblioteka Omnibus</h1>
             </div>
-            <div class="baner-right">
-                <a href="logowanie.html" class="btn btn-light">Zaloguj się</a>
-                <a href="rejestracja.html" class="btn">Zarejestruj się</a>
+            <div class="baner-right" id="panel-nawigacji">
+                <span id="powitanie-uzytkownika"></span>
+                <a href="logowanie.html" id="link-logowanie" class="btn btn-light">Zaloguj się</a>
+                <a href="rejestracja.html" id="link-rejestracja" class="btn">Zarejestruj się</a>
+                <input type="button" id="btn-wyloguj" value="Wyloguj" onclick="Wyloguj()" class="btn btn-light" style="display: none;">
             </div>
         </div>
         <div class="main">
