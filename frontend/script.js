@@ -20,7 +20,7 @@ function SprawdzSesje() {
             panelAdmina.style.display = "block";
         }
 
-        let wypozyczone = localStorage.getItem("wypozyczone_" + uzytkownik.login); ////!!!!!
+        let wypozyczone = localStorage.getItem("wypozyczone_" + uzytkownik.login);              ////!!!!!
 
         if (wypozyczone === null) {
             wypozyczone = "Brak wypożyczonych pozycji";
@@ -55,8 +55,8 @@ async function PobierzKatalog() {
         pojemnik.innerHTML = "";
 
         ksiazki.forEach(ksiazka => {
-                    let rok = localStorage.getItem("rok_" + ksiazka.id);  ////!!!!!
-                    let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id); ////!!!!!
+                    let rok = localStorage.getItem("rok_" + ksiazka.id);                    ////!!!!!
+                    let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id);              ////!!!!!
  
                     if (rok ===null) {
                         rok = "Brak danych";
@@ -103,8 +103,8 @@ async function PokazSzczegoly(idKsiazki) {
         let response = await fetch("/api/ksiazki/" + idKsiazki);
         let ksiazka = await response.json();
 
-        let rok = localStorage.getItem("rok_" + ksiazka.id); ////!!!!!
-        let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id); ////!!!!!
+        let rok = localStorage.getItem("rok_" + ksiazka.id);                                ////!!!!!
+        let rodzaj = localStorage.getItem("rodzaj_" + ksiazka.id);                          ////!!!!!
 
         if (rok ===null) {
             rok = "Brak danych";
@@ -143,8 +143,107 @@ async function PokazSzczegoly(idKsiazki) {
     }
 }
 
+function WypozyczLubZarezerwuj(tytulKsiazki,akcja) {
+    let tekstUzytkownika = localStorage.getItem("zalogowanyUzytkownik");
+
+    if (tekstUzytkownika === null) {
+        alert("Musisz się zalogować, aby wypożyczyć lub zarezerwować pozycję!");
+        return;
+    }
+
+                                                                    ////!!!!!
+    let uzytkownik = JSON.parse(tekstUzytkownika);
+    let klucz = "wypozyczone_" + uzytkownik.login;
+    let obecne = localStorage.getItem(klucz);
+    let nowyWpis = tytulKsiazki + " (" + akcja + ")";
+
+    if (obecne === null) {
+        localStorage.setItem(klucz, nowyWpis);
+    } else {
+        localStorage.setItem(klucz, obecne + ", " + nowyWpis);
+    }
+                                                                    ////!!!!!
+    SprawdzSesje();
+}
+
+async function DodajLubEdytujKsiazke(event) {
+    event.preventDefault();
+
+    let idEdycji = document.getElementById("edytuj-id").value;
+    let tytul = document.getElementById("tytul-ksiazki").value;
+    let autor = document.getElementById("autor-ksiazki").value;
+    let rok = document.getElementById("rok-ksiazki").value;
+    let rodzaj = document.getElementById("rodzaj-ksiazki").value;
+    let komunikat = document.getElementById("komunikat-admin");
+
+    let metoda = "POST";
+    let adres = "/api/ksiazki";
+
+    if (idEdycji !== "") {
+        metoda = "PUT";
+        adres = "/api/ksiazki/" + idEdycji;
+    }
+
+    try {
+        let response = await fetch(adres, {
+            method: metoda,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ tytul: tytul, autor: autor })
+        });
+
+        if (response.ok) {
+            let dane = await response.json();
+
+            localStorage.setItem("rok_" + dane.id, rok);            ////!!!!!
+            localStorage.setItem("rodzaj_" + dane.id, rodzaj);      ////!!!!!
+
+            komunikat.style.color = "green";
+            komunikat.innerText = "Zapisano pozycję w bazie!";
+
+            document.getElementById("formularz-ksiazki").reset();
+            document.getElementById("edytuj-id").value = "";
+            document.getElementById("btn-zapisz-ksiazke").innerText = "Dodaj pozycję";
+
+            PobierzKatalog();
+        } else {
+            komunikat.style.color = "red";
+            komunikat.innerText = "Błąd zapisu danych.";
+        }
+    }
+    catch (error) {
+        komunikat.style.color = "red";
+        komunikat.innerText = "Brak połączenia z API.";
+        console.error(error);
+    }
+}
+
+function ZaladujDoEdycji(id, tytul, autor) {
+    document.getElementById("edytuj-id").value = id;
+    document.getElementById("tytul-ksiazki").value = tytul;
+    document.getElementById("autor-ksiazki").value = autor;
+    document.getElementById("btn-zapisz-ksiazke").innerText = "Zapisz zmiany (ID: " + id + ")";
+}
+
+async function UsunKsiazke(idKsiazki) {
+    try {
+        let response = await fetch("/api/ksiazki/" + idKsiazki, {
+            method: "DELETE"
+        });
+
+        if (response.ok) {
+            document.getElementById("szczegoly-pozycji").innerHTML = "<p>Usunięto pozycję z bazy.</p>";
+            PobierzKatalog();
+        }
+    }
+    catch (error) {
+        console.error(error);
+    }
+}
+
 SprawdzSesje();
 
 
 
-//// W przyszłości wszyskie localstorage podmienić oprócz identyfikacji roli użytkownika ,tak żeby było jak najbardziej bezpiecznie!!!! (W miejscach wykrzykników)
+//// W przyszłości wszyskie localstorage podmienić oprócz identyfikacji roli użytkownika ,tak żeby było jak najbardziej bezpiecznie!!!! (W miejscach wykrzykników zaznaczone do wymiany)
