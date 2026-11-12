@@ -2,7 +2,7 @@
 
 Wykonujący: Bartosz Hauff, Adam Musiał
 
-Ostatnia aktualizacja: 10.11.2026
+Ostatnia aktualizacja: 12.11.2026
 
 ## Frontend
 
@@ -11,7 +11,7 @@ Ostatnia aktualizacja: 10.11.2026
 - Filtrowane pozycji po roku wydania, rodzaju pozycji (książka, czasopismo, komiks itp)
 - Po wybraniu interesującej nas pozycji otwiera się okienko z nią, widocznym zdjęciem i możliwością wypożyczenia/zarezerwowania
 - Użytkownicy mają dostęp do swojej strony konta, gdzie widoczny jest ich profil, dane o wypożyczonych książkach, zaległości do zapłaty itp.
-- Panel bibliotekarza (admina), który może dodawać nowe pozycje do systemu
+- Panel bibliotekarza (admina), który może dodawać nowe pozycje, edytować informacje o istniejących i usuwać
 
 ## Backend
 
@@ -28,7 +28,11 @@ Ostatnia aktualizacja: 10.11.2026
 | `DELETE` | `/ksiazki/{ksiazka_id}` | Usuwa książkę o podanym ID | `200 OK`, `404 Not Found` |
 | `GET` | `/uzytkownicy` | Pobiera listę użytkowników | `200 OK` |
 | `POST` | `/uzytkownicy` | Dodaje nowe konto do bazy | `201 Created`, `400 Bad Request` |
-| `GET` | `/health` | Sprawdza kondycję serwisu | `200 OK` |
+| `POST` | `/logowanie` | Weryfikuje dane logowania i zwraca profil | `200 OK`, `401 Unauthorized` |
+| `GET` | `/wypozyczenia/{uzytkownik_id}` | Zwraca listę pozycji użytkownika | `200 OK`, `404 Not Found` |
+| `POST` | `/wypozyczenia` | Tworzy nowe wypożyczenie/rezerwacje | `201 Created`, `400 Bad Request` |
+| `GET` | `/health` | Sprawdza fizyczne połączenie z bazą | `200 OK`, `503 Service Unavailable` |
+
 
 ---
 
@@ -39,7 +43,9 @@ Zwraca listę wszystkich książek:
   {
     "id": 1,
     "tytul": "Wiedźmin",
-    "autor": "Andrzej Sapkowski"
+    "autor": "Andrzej Sapkowski",
+    "rok": 1990,
+    "rodzaj": "Książka"
   }
 ]
 ```
@@ -50,7 +56,9 @@ Zwraca pojedynczą książkę (lub kod `404`, gdy zasób nie istnieje):
 {
   "id": 1,
   "tytul": "Wiedźmin",
-  "autor": "Andrzej Sapkowski"
+  "autor": "Andrzej Sapkowski",
+  "rok": 1990,
+  "rodzaj": "Książka"
 }
 ```
 
@@ -60,17 +68,21 @@ Dodaje nową książkę (zwraca kod `201` lub `400`, gdy pola są puste).
 **Request (wysyłane dane):**
 ```json
 {
-  "tytul": "Wiedźmin",
-  "autor": "Andrzej Sapkowski"
+  "tytul": "Solaris",
+  "autor": "Stanisław Lem",
+  "rok": 1961,
+  "rodzaj": "Książka"
 }
 ```
 
 **Response (odpowiedź serwera):**
 ```json
 {
-  "id": 1,
-  "tytul": "Wiedźmin",
-  "autor": "Andrzej Sapkowski"
+  "id": 2,
+  "tytul": "Solaris",
+  "autor": "Stanisław Lem",
+  "rok": 1961,
+  "rodzaj": "Książka"
 }
 ```
 
@@ -80,7 +92,9 @@ Aktualizuje dane książki o podanym ID:
 {
   "id": 1,
   "tytul": "Wiedźmin - Poprawiony",
-  "autor": "Andrzej Sapkowski"
+  "autor": "Andrzej Sapkowski",
+  "rok": 1990,
+  "rodzaj": "Książka"
 }
 ```
 
@@ -117,6 +131,60 @@ Zwraca listę użytkowników:
 ]
 ```
 
+#### `POST /logowanie`
+Sprawdza poprawność loginu i hasła.
+
+**Request (wysyłane dane):**
+```json
+{
+  "login": "jan123",
+  "haslo": "tajnehaslo"
+}
+```
+
+**Response (odpowiedź serwera):**
+```json
+{
+  "id": 2,
+  "login": "jan123",
+  "rola": "user"
+}
+```
+
+#### `GET /wypozyczenia/{uzytkownik_id}`
+Pobiera dane o profilu z wykorzystaniem JOIN:
+```json
+{
+    "tytul": "Wiedźmin",
+    "typ": "wypożyczono",
+    "data_wypozyczenia": "2026-11-12T15:30:00"
+}
+```
+
+
+#### `POST /wypozyczenia`
+Dodaje akcję do książki:
+
+**Request (wysyłane dane):**
+```json
+{
+  "ksiazka_id": 1,
+  "uzytkownik_id": 2,
+  "typ": "wypożyczono"
+}
+```
+
+**Response (odpowiedź serwera):**
+```json
+{
+  "id": 1,
+  "ksiazka_id": 1,
+  "uzytkownik_id": 2,
+  "typ": "wypożyczono"
+}
+```
+
+
 ####  `GET /health`
 Sprawdza kondycję serwisu:
 ```json
@@ -129,3 +197,6 @@ Sprawdza kondycję serwisu:
 
 - Relacyjna baza danych PostgreSQL zarządzana wewnątrz kontenera Docker.
 - Automatycznie generowane tabele ksiazki oraz uzytkownicy z wbudowanym mechanizmem tworzenia konta administratora przy starcie systemu.
+- Trzecia powiązana tabela wypozyczenia wykorzystująca relacje kluczy obcych (FOREIGN KEY i ON DELETE CASCADE) na połączenie książek z użytkownikami.
+- Izolowana wewnętrzna sieć kontenerów Docker Compose w celu zabezpieczenia portów bazy danych przed zewnętrznym dostępem.
+- Zapytania inicjalizujące strukturę książek z synchronizacją autoinkrementacji SERIAL w celu uniknięcia błędów nadpisywania ID.

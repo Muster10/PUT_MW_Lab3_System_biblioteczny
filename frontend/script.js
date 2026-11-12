@@ -250,10 +250,3 @@ async function UsunKsiazke(idKsiazki) {
 }
 
 SprawdzSesje();
-
-
-// DO ZROBIENIA W BACKENDZIE (main.py) I BAZIE DANYCH:
-// 1. Tabela 'ksiazki' i klasa 'NowaKsiazka': dodać kolumny/pola 'rok' (INTEGER/int) oraz 'rodzaj' (VARCHAR/str) i uwzględnić je w POST /ksiazki oraz PUT /ksiazki/{id}.
-// 2. Endpoint POST /logowanie: przyjąć login i haslo, sprawdzić w tabeli 'uzytkownicy' (WHERE login=%s AND haslo=%s) i zwrócić {id, login, rola} lub kod 401.
-// 3. Tabela 'wypozyczenia' i klasa 'NoweWypozyczenie': dodać kolumnę/pole 'typ' (VARCHAR/str).
-// 4. Endpointy wypożyczeń: dodać POST /wypozyczenia (zapis do tabeli) oraz GET /wypozyczenia/{uzytkownik_id} (SELECT z JOINem tabeli ksiazki zwracający tytul i typ).

@@ -13,6 +13,8 @@ def polacz_z_db():
 class NowaKsiazka(BaseModel):
     tytul: str
     autor: str
+    rok: int
+    rodzaj: str
 
 class NowyUzytkownik(BaseModel):
     login: str
@@ -21,6 +23,11 @@ class NowyUzytkownik(BaseModel):
 class NoweWypozyczenie(BaseModel):
     ksiazka_id: int
     uzytkownik_id: int
+    typ: str
+
+class DaneLogowania(BaseModel):
+    login: str
+    haslo: str
 
 @app.on_event("startup")
 def utworz_tabele():
@@ -33,7 +40,9 @@ def utworz_tabele():
         CREATE TABLE IF NOT EXISTS ksiazki (
             id SERIAL PRIMARY KEY,
             tytul VARCHAR(255) NOT NULL,
-            autor VARCHAR(255) NOT NULL
+            autor VARCHAR(255) NOT NULL,
+            rok INTEGER NOT NULL,
+            rodzaj VARCHAR(255) NOT NULL
         );
     """)
 
@@ -42,8 +51,8 @@ def utworz_tabele():
     cursor.execute("SELECT COUNT(*) FROM ksiazki;")
     if cursor.fetchone()[0] == 0:
         cursor.execute(
-            "INSERT INTO ksiazki (id, tytul, autor) VALUES (%s, %s, %s);",
-            (1, 'Biblia', 'Jan Gutenberg')
+            "INSERT INTO ksiazki (id, tytul, autor, rok, rodzaj) VALUES (%s, %s, %s, %s, %s);",
+            (1, 'Biblia', 'Jan Gutenberg', 1452, "Książka")
         )
 
     #tabela użytkowników
@@ -73,6 +82,7 @@ def utworz_tabele():
             id SERIAL PRIMARY KEY,
             ksiazka_id INTEGER NOT NULL REFERENCES ksiazki(id) ON DELETE CASCADE,
             uzytkownik_id INTEGER NOT NULL REFERENCES uzytkownicy(id) ON DELETE CASCADE,
+            typ VARCHAR(255) NOT NULL,
             data_wypozyczenia TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     """)
@@ -141,14 +151,14 @@ def dodaj_ksiazke(ksiazka: NowaKsiazka):
     conn = polacz_z_db()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO ksiazki (tytul, autor) VALUES (%s, %s) RETURNING id;", (ksiazka.tytul, ksiazka.autor)
+        "INSERT INTO ksiazki (tytul, autor, rok, rodzaj) VALUES (%s, %s, %s, %s) RETURNING id;", (ksiazka.tytul, ksiazka.autor, ksiazka.rok, ksiazka.rodzaj)
     ) 
     nowe_id = cursor.fetchone()[0]
 
     conn.commit()
     cursor.close()
     conn.close()
-    return {"id": nowe_id, "tytul": ksiazka.tytul, "autor": ksiazka.autor}
+    return {"id": nowe_id, "tytul": ksiazka.tytul, "autor": ksiazka.autor, "rok": ksiazka.rok, "rodzaj": ksiazka.rodzaj}
 
 @app.delete("/ksiazki/{ksiazka_id}")
 def usun_ksiazke(ksiazka_id: int):
@@ -172,8 +182,8 @@ def usun_ksiazke(ksiazka_id: int):
 def edytuj_ksiazke(ksiazka_id: int, ksiazka: NowaKsiazka):
     conn = polacz_z_db()
     cursor = conn.cursor()
-    cursor.execute("UPDATE ksiazki SET tytul = %s, autor = %s WHERE id = %s RETURNING id;",
-        (ksiazka.tytul, ksiazka.autor, ksiazka_id))
+    cursor.execute("UPDATE ksiazki SET tytul = %s, autor = %s, rok = %s, rodzaj = %s WHERE id = %s RETURNING id;",
+        (ksiazka.tytul, ksiazka.autor, ksiazka.rok, ksiazka.rodzaj, ksiazka_id))
     zaktualizowana = cursor.fetchone()
 
     if not zaktualizowana: #nie można zaktualizować danych o książce, która nie jest dodana do bazy danych
@@ -205,6 +215,76 @@ def zarejestruj_uzytkownika(uzytkownik: NowyUzytkownik):
     cursor.close()
     conn.close()
     return {"id": wynik[0], "login": uzytkownik.login, "rola": wynik[1]}
+
+@app.post("/logowanie")
+def zaloguj_uzytkownika(dane: DaneLogowania):
+    conn = polacz_z_db()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+    cursor.execute(
+        "SELECT id, login, rola FROM uzytkownicy WHERE login = %s AND haslo = %s;",
+        (dane.login, dane.haslo)
+    )
+    uzytkownik = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if not uzytkownik:
+        raise HTTPException(status_code=401, detail="Nieprawidłowy login lub hasło")
+    return uzytkownik
+
+@app.get("/wypozyczenia/{uzytkownik_id}")
+def pobierz_wypozyczenia_uzytkownika(uzytkownik_id: int):
+    conn = polacz_z_db()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+    cursor.execute("SELECT id FROM uzytkownicy WHERE id = %s;", (uzytkownik_id,))
+    if not cursor.fetchone():
+        cursor.close()
+        conn.close()
+        raise HTTPException(status_code=404, detail="Użytkownik o podanym ID nie istnieje")
+
+    cursor.execute("""
+        SELECT k.tytul, w.typ, w.data_wypozyczenia
+        FROM wypozyczenia w
+        JOIN ksiazki k ON w.ksiazka_id = k.id
+        WHERE w.uzytkownik_id = %s;
+        """, (uzytkownik_id,)
+    )
+
+    dane = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return dane
+
+@app.post("/wypozyczenia", status_code=201)
+def dodaj_wypozyczenie(wypoz: NoweWypozyczenie):
+    conn = polacz_z_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "INSERT INTO wypozyczenia (ksiazka_id, uzytkownik_id, typ) VALUES (%s, %s, %s) RETURNING id;",
+            (wypoz.ksiazka_id, wypoz.uzytkownik_id, wypoz.typ)
+        )
+        nowe_id = cursor.fetchone()[0]
+        conn.commit()
+    except psycopg2.errors.ForeignKeyViolation:
+        conn.rollback() #cofa transakcje w wyniku błędu
+        cursor.close()
+        conn.close()
+        raise HTTPException(status_code=400, detail="Nie ma takiej książki lub użytkownika w bazie")
+
+    cursor.close()
+    conn.close()
+
+    return {
+        "id": nowe_id,
+        "ksiazka_id": wypoz.ksiazka_id,
+        "uzytkownik_id": wypoz.uzytkownik_id,
+        "typ": wypoz.typ
+    }
 
 # docker-compose up
 # docker-compose down
