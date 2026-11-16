@@ -125,14 +125,14 @@ async function PokazSzczegoly(idKsiazki) {
             let uzytkownik = JSON.parse(tekstUzytkownika);
             if (uzytkownik.rola === "admin") {
                 przyciskiAdmina = `
-                   <input type="button" value="Edytuj" onclick="ZaladujDoEdycji(${ksiazka.id}, '${ksiazka.tytul}', '${ksiazka.autor}')" class="btn btn-red">
+                    <input type="button" value="Edytuj" onclick="ZaladujDoEdycji(${ksiazka.id}, '${ksiazka.tytul}', '${ksiazka.autor}', ${ksiazka.rok}, '${ksiazka.kolor_okladki}')" class="btn btn-red">
                     <input type="button" value="Usuń" onclick="UsunKsiazke(${ksiazka.id})" class="btn btn-red"> 
                 `;
             }
         }
         pojemnikSzczegolow.innerHTML = `
                 <div class="ksiazka-karta">
-                    <div class="okladka-ksiazki">
+                <div class="okladka-ksiazki" style="background: linear-gradient(135deg, ${ksiazka.kolor_okladki || '#8b131b'}, #4a070b);">
                     <img src="Logo.png" alt="Logo" class="okladka-logo">
                     <div class="okladka-tytul">${ksiazka.tytul}</div>
                     <div class="okladka-autor">${ksiazka.autor}</div>
@@ -185,6 +185,7 @@ async function DodajLubEdytujKsiazke(event) {
     let autor = document.getElementById("autor-ksiazki").value;
     let rok = document.getElementById("rok-ksiazki").value;
     let rodzaj = document.getElementById("rodzaj-ksiazki").value;
+    let kolor = document.getElementById("kolor-ksiazki").value;
     let komunikat = document.getElementById("komunikat-admin");
 
     let metoda = "POST";
@@ -201,7 +202,7 @@ async function DodajLubEdytujKsiazke(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ tytul: tytul, autor: autor, rok: Number(rok), rodzaj: rodzaj})
+            body: JSON.stringify({ tytul: tytul, autor: autor, rok: Number(rok), rodzaj: rodzaj, kolor_okladki: kolor})
         });
 
         if (response.ok) {
@@ -226,10 +227,14 @@ async function DodajLubEdytujKsiazke(event) {
     }
 }
 
-function ZaladujDoEdycji(id, tytul, autor) {
+function ZaladujDoEdycji(id, tytul, autor, rok, kolor) {
     document.getElementById("edytuj-id").value = id;
     document.getElementById("tytul-ksiazki").value = tytul;
     document.getElementById("autor-ksiazki").value = autor;
+    document.getElementById("rok-ksiazki").value = rok;
+    if (kolor && kolor !== "undefined") {
+        document.getElementById("kolor-ksiazki").value = kolor;
+    }
     document.getElementById("btn-zapisz-ksiazke").innerText = "Zapisz zmiany (ID: " + id + ")";
 }
 

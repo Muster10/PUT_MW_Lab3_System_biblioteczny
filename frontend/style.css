@@ -450,3 +450,9 @@ html, body {
     font-size: 12px;
     color: #e0cbd0;
 }
+
+input[type="color"].input-pole {
+    height: 50px;
+    padding: 0;
+    cursor: pointer;
+}

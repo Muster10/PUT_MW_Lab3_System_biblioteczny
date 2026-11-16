@@ -15,6 +15,7 @@ class NowaKsiazka(BaseModel):
     autor: str
     rok: int
     rodzaj: str
+    kolor_okladki: str = "#8b131b"
 
 class NowyUzytkownik(BaseModel):
     login: str
@@ -42,7 +43,8 @@ def utworz_tabele():
             tytul VARCHAR(255) NOT NULL,
             autor VARCHAR(255) NOT NULL,
             rok INTEGER NOT NULL,
-            rodzaj VARCHAR(255) NOT NULL
+            rodzaj VARCHAR(255) NOT NULL,
+            kolor_okladki VARCHAR(7) DEFAULT '#8b131b'
         );
     """)
 
@@ -52,109 +54,109 @@ def utworz_tabele():
     if cursor.fetchone()[0] == 0:
         cursor.execute(
             """
-            INSERT INTO ksiazki (id, tytul, autor, rok, rodzaj) VALUES 
-            (1, 'Biblia', 'Jan Gutenberg', 1452, 'Książka'),
-            (2, 'The Walking Dead', 'Robert Kirkman, Tony Moore', 2003, 'Komiks'),
-            (3, 'Punisher: Witaj powrotem, Frank', 'Garth Ennis, Steve Dillon', 2000, 'Komiks'),
-            (4, 'Neuromancer', 'William Gibson', 1984, 'Książka'),
-            (5, 'Człowiek z Wysokiego Zamku', 'Philip K. Dick', 1962, 'Książka'),
-            (6, 'Daredevil: Odrodzony', 'Frank Miller, David Mazzucchelli', 1986, 'Komiks'),
-            (7, 'Czy androidy śnią o elektrycznych owcach?', 'Philip K. Dick', 1968, 'Książka'),
-            (8, 'Ubik', 'Philip K. Dick', 1969, 'Książka'),
-            (9, 'Pixel', 'Idea Ahead', 2023, 'Czasopismo'),
-            (10, 'Trudno być bogiem', 'Arkadij i Borys Strugaccy', 1964, 'Książka'),
-            (11, 'Ekrany', 'Wydawnictwo Ekrany', 2023, 'Czasopismo'),
-            (12, 'Piknik na skraju drogi', 'Arkadij i Borys Strugaccy', 1972, 'Książka'),
-            (13, 'Modlitwa o Owena', 'John Irving', 1989, 'Książka'),
-            (14, 'Regulamin tłoczni win', 'John Irving', 1985, 'Książka'),
-            (15, 'Świat według Garpa', 'John Irving', 1978, 'Książka'),
-            (16, 'Lód', 'Jacek Dukaj', 2007, 'Książka'),
-            (17, 'Inne pieśni', 'Jacek Dukaj', 2003, 'Książka'),
-            (18, 'Perfekcyjna niedoskonałość', 'Jacek Dukaj', 2004, 'Książka'),
-            (19, 'Czarne oceany', 'Jacek Dukaj', 2001, 'Książka'),
-            (20, 'Kino', 'Fundacja Kino', 2023, 'Czasopismo'),
-            (21, 'X-Men: Mroczna Phoenix', 'Chris Claremont, John Byrne', 1980, 'Komiks'),
-            (22, 'Spider-Man: Ostatnie łowy Kravena', 'J.M. DeMatteis, Mike Zeck', 1987, 'Komiks'),
-            (23, 'Ślepnąc od świateł', 'Jakub Żulczyk', 2014, 'Książka'),
-            (24, 'Hellboy: Nasienie zniszczenia', 'Mike Mignola', 1994, 'Komiks'),
-            (25, 'Morfina', 'Szczepan Twardoch', 2012, 'Książka'),
-            (26, 'Król', 'Szczepan Twardoch', 2016, 'Książka'),
-            (27, 'Sin City: Miasto grzechu', 'Frank Miller', 1991, 'Komiks'),
-            (28, 'Empuzjon', 'Olga Tokarczuk', 2022, 'Książka'),
-            (29, 'Sens', 'Wydawnictwo Zwierciadło', 2023, 'Czasopismo'),
-            (30, 'Prawiek i inne czasy', 'Olga Tokarczuk', 1996, 'Książka'),
-            (31, 'Księgi Jakubowe', 'Olga Tokarczuk', 2014, 'Książka'),
-            (32, 'Kaznodzieja', 'Garth Ennis, Steve Dillon', 1995, 'Komiks'),
-            (33, 'Persepolis', 'Marjane Satrapi', 2000, 'Komiks'),
-            (34, 'Charaktery', 'Forum Media Polska', 2023, 'Czasopismo'),
-            (35, 'Bieguni', 'Olga Tokarczuk', 2007, 'Książka'),
-            (36, 'Stary człowiek i morze', 'Ernest Hemingway', 1952, 'Książka'),
-            (37, 'Kod Da Vinci', 'Dan Brown', 2003, 'Książka'),
-            (38, 'Znak', 'Społeczny Instytut Wydawniczy Znak', 2023, 'Czasopismo'),
-            (39, 'Mężczyźni, którzy nienawidzą kobiet', 'Stieg Larsson', 2005, 'Książka'),
-            (40, 'Grona gniewu', 'John Steinbeck', 1939, 'Książka'),
-            (41, 'Imię róży', 'Umberto Eco', 1980, 'Książka'),
-            (42, 'Przeminęło z wiatrem', 'Margaret Mitchell', 1936, 'Książka'),
-            (43, 'Pismo. Magazyn opinii', 'Fundacja Pismo', 2023, 'Czasopismo'),
-            (44, 'Przekrój', 'Fundacja Przekrój', 2023, 'Czasopismo'),
-            (45, 'Maus', 'Art Spiegelman', 1986, 'Komiks'),
-            (46, 'Tygodnik Powszechny', 'Tygodnik Powszechny Sp. z o.o.', 2023, 'Czasopismo'),
-            (47, 'Sieci', 'Fratria', 2023, 'Czasopismo'),
-            (48, 'Do Rzeczy', 'Orle Pióro', 2023, 'Czasopismo'),
-            (49, 'Wprost', 'AWR Wprost', 2023, 'Czasopismo'),
-            (50, 'Newsweek Polska', 'Ringier Axel Springer Polska', 2023, 'Czasopismo'),
-            (51, 'Polityka', 'Polityka Sp. z o.o.', 2023, 'Czasopismo'),
-            (52, 'Wichrowe Wzgórza', 'Emily Brontë', 1847, 'Książka'),
-            (53, 'Duma i uprzedzenie', 'Jane Austen', 1813, 'Książka'),
-            (54, 'Bracia Karamazow', 'Fiodor Dostojewski', 1880, 'Książka'),
-            (55, 'Nowy wspaniały świat', 'Aldous Huxley', 1932, 'Książka'),
-            (56, 'Wielki Gatsby', 'F. Scott Fitzgerald', 1925, 'Książka'),
-            (57, 'National Geographic Polska', 'Burda Media Polska', 2023, 'Czasopismo'),
-            (58, 'Zabić drozda', 'Harper Lee', 1960, 'Książka'),
-            (59, 'Lolita', 'Vladimir Nabokov', 1955, 'Książka'),
-            (60, 'Buszujący w zbożu', 'J.D. Salinger', 1951, 'Książka'),
-            (61, 'Pachnidło', 'Patrick Süskind', 1985, 'Książka'),
-            (62, 'Alchemik', 'Paulo Coelho', 1988, 'Książka'),
-            (63, 'Focus', 'Burda Media Polska', 2022, 'Czasopismo'),
-            (64, 'Igrzyska śmierci', 'Suzanne Collins', 2008, 'Książka'),
-            (65, 'Opowieści z Narnii: Lew, Czarownica i stara szafa', 'C.S. Lewis', 1950, 'Książka'),
-            (66, 'Gra o tron', 'George R.R. Martin', 1996, 'Książka'),
-            (67, 'Złodziejka książek', 'Markus Zusak', 2005, 'Książka'),
-            (68, 'Sandman: Preludia i nokturny', 'Neil Gaiman', 1989, 'Komiks'),
-            (69, 'Świat Nauki', 'Prószyński Media', 2023, 'Czasopismo'),
-            (70, 'Sto lat samotności', 'Gabriel García Márquez', 1967, 'Książka'),
-            (71, 'V jak vendetta', 'Alan Moore, David Lloyd', 1982, 'Komiks'),
-            (72, 'Diuna', 'Frank Herbert', 1965, 'Książka'),
-            (73, 'Cień wiatru', 'Carlos Ruiz Zafón', 2001, 'Książka'),
-            (74, 'Strażnicy', 'Alan Moore, Dave Gibbons', 1986, 'Komiks'),
-            (75, 'Batman: Zabójczy żart', 'Alan Moore, Brian Bolland', 1988, 'Komiks'),
-            (76, 'Harry Potter i Kamień Filozoficzny', 'J.K. Rowling', 1997, 'Książka'),
-            (77, 'Hobbit, czyli tam i z powrotem', 'J.R.R. Tolkien', 1937, 'Książka'),
-            (78, 'Wiedza i Życie', 'Prószyński Media', 2023, 'Czasopismo'),
-            (79, 'Smerfy: Czarne Smerfy', 'Peyo', 1963, 'Komiks'),
-            (80, 'Władca Pierścieni: Drużyna Pierścienia', 'J.R.R. Tolkien', 1954, 'Książka'),
-            (81, 'Kaczor Donald', 'Egmont Polska', 2023, 'Czasopismo'),
-            (82, 'Mały Książę', 'Antoine de Saint-Exupéry', 1943, 'Książka'),
-            (83, 'Folwark zwierzęcy', 'George Orwell', 1945, 'Książka'),
-            (84, 'Rok 1984', 'George Orwell', 1949, 'Książka'),
-            (85, 'Mistrz i Małgorzata', 'Michaił Bułhakow', 1967, 'Książka'),
-            (86, 'Zbrodnia i kara', 'Fiodor Dostojewski', 1866, 'Książka'),
-            (87, 'Tintin: Cygaro faraona', 'Hergé', 1934, 'Komiks'),
-            (88, 'Chłopi', 'Władysław Reymont', 1904, 'Książka'),
-            (89, 'Wesele', 'Stanisław Wyspiański', 1901, 'Książka'),
-            (90, 'Dziady, cz. III', 'Adam Mickiewicz', 1832, 'Książka'),
-            (91, 'Asteriks z Galij', 'René Goscinny, Albert Uderzo', 1961, 'Komiks'),
-            (92, 'Thorgal: Zdradzona czarodziejka', 'Grzegorz Rosiński, Jean Van Hamme', 1980, 'Komiks'),
-            (93, 'Star Wars: Darth Vader', 'Charles Soule', 2021, 'Komiks'),
-            (94, 'Ferdydurke', 'Witold Gombrowicz', 1937, 'Książka'),
-            (95, 'Quo Vadis', 'Henryk Sienkiewicz', 1896, 'Książka'),
-            (96, 'Lalka', 'Bolesław Prus', 1890, 'Książka'),
-            (97, 'Pan Tadeusz', 'Adam Mickiewicz', 1834, 'Książka'),
-            (98, 'Kajko i Kokosz: Szkoła latania', 'Janusz Christa', 1975, 'Komiks'),
-            (99, 'CD-Action', 'Wydawnictwo Bauer', 2023, 'Czasopismo'),
-            (100, 'Solaris', 'Stanisław Lem', 1961, 'Książka'),
-            (101, 'Wiedźmin: Ostatnie życzenie', 'Andrzej Sapkowski', 1993, 'Książka'),
-            (102, 'Pan Samochodzik i templariusze', 'Zbigniew Nienacki', '1966', 'Książka');
+            INSERT INTO ksiazki (id, tytul, autor, rok, rodzaj, kolor_okladki) VALUES 
+            (1, 'Biblia', 'Jan Gutenberg', 1452, 'Książka', '#8b131b'),
+            (2, 'Neuromancer', 'William Gibson', 1984, 'Książka', '#bf19b2'),
+            (3, 'The Walking Dead', 'Robert Kirkman, Tony Moore', 2003, 'Komiks', '#96aef0'),
+            (4, 'Człowiek z Wysokiego Zamku', 'Philip K. Dick', 1962, 'Książka', '#fc6f74'),
+            (5, 'Pixel', 'Idea Ahead', 2023, 'Czasopismo', '#1b0e55'),
+            (6, 'Ekrany', 'Wydawnictwo Ekrany', 2023, 'Czasopismo', '#80e9f4'),
+            (7, 'Czy androidy śnią o elektrycznych owcach?', 'Philip K. Dick', 1968, 'Książka', '#3c664c'),
+            (8, 'Ubik', 'Philip K. Dick', 1969, 'Książka', '#82f3d7'),
+            (9, 'Trudno być bogiem', 'Arkadij i Borys Strugaccy', 1964, 'Książka', '#f71421'),
+            (10, 'Punisher: Witaj powrotem, Frank', 'Garth Ennis, Steve Dillon', 2000, 'Komiks', '#2eefde'),
+            (11, 'Piknik na skraju drogi', 'Arkadij i Borys Strugaccy', 1972, 'Książka', '#a1879f'),
+            (12, 'Daredevil: Odrodzony', 'Frank Miller, David Mazzucchelli', 1986, 'Komiks', '#bc8524'),
+            (13, 'Kino', 'Fundacja Kino', 2023, 'Czasopismo', '#ff2ac8'),
+            (14, 'Modlitwa o Owena', 'John Irving', 1989, 'Książka', '#38940c'),
+            (15, 'Sens', 'Wydawnictwo Zwierciadło', 2023, 'Czasopismo', '#fc4ffd'),
+            (16, 'Regulamin tłoczni win', 'John Irving', 1985, 'Książka', '#1307fc'),
+            (17, 'Świat według Garpa', 'John Irving', 1978, 'Książka', '#790362'),
+            (18, 'Lód', 'Jacek Dukaj', 2007, 'Książka', '#d6c3ea'),
+            (19, 'Inne pieśni', 'Jacek Dukaj', 2003, 'Książka', '#29d19f'),
+            (20, 'Perfekcyjna niedoskonałość', 'Jacek Dukaj', 2004, 'Książka', '#e33671'),
+            (21, 'X-Men: Mroczna Phoenix', 'Chris Claremont, John Byrne', 1980, 'Komiks', '#9335ac'),
+            (22, 'Czarne oceany', 'Jacek Dukaj', 2001, 'Książka', '#c908b0'),
+            (23, 'Ślepnąc od świateł', 'Jakub Żulczyk', 2014, 'Książka', '#c0a1fd'),
+            (24, 'Spider-Man: Ostatnie łowy Kravena', 'J.M. DeMatteis, Mike Zeck', 1987, 'Komiks', '#8f4071'),
+            (25, 'Charaktery', 'Forum Media Polska', 2023, 'Czasopismo', '#71dd65'),
+            (26, 'Morfina', 'Szczepan Twardoch', 2012, 'Książka', '#b612c7'),
+            (27, 'Król', 'Szczepan Twardoch', 2016, 'Książka', '#a506fd'),
+            (28, 'Empuzjon', 'Olga Tokarczuk', 2022, 'Książka', '#199f5e'),
+            (29, 'Prawiek i inne czasy', 'Olga Tokarczuk', 1996, 'Książka', '#0d05ef'),
+            (30, 'Księgi Jakubowe', 'Olga Tokarczuk', 2014, 'Książka', '#f80f6f'),
+            (31, 'Bieguni', 'Olga Tokarczuk', 2007, 'Książka', '#f59528'),
+            (32, 'Znak', 'Społeczny Instytut Wydawniczy Znak', 2023, 'Czasopismo', '#5e3574'),
+            (33, 'Stary człowiek i morze', 'Ernest Hemingway', 1952, 'Książka', '#83cfcd'),
+            (34, 'Kod Da Vinci', 'Dan Brown', 2003, 'Książka', '#f514e1'),
+            (35, 'Pismo. Magazyn opinii', 'Fundacja Pismo', 2023, 'Czasopismo', '#a14b10'),
+            (36, 'Mężczyźni, którzy nienawidzą kobiet', 'Stieg Larsson', 2005, 'Książka', '#a9115d'),
+            (37, 'Grona gniewu', 'John Steinbeck', 1939, 'Książka', '#dd95c7'),
+            (38, 'Przekrój', 'Fundacja Przekrój', 2023, 'Czasopismo', '#7ec1e3'),
+            (39, 'Imię róży', 'Umberto Eco', 1980, 'Książka', '#1232a8'),
+            (40, 'Przeminęło z wiatrem', 'Margaret Mitchell', 1936, 'Książka', '#8c49c4'),
+            (41, 'Hellboy: Nasienie zniszczenia', 'Mike Mignola', 1994, 'Komiks', '#167367'),
+            (42, 'Wichrowe Wzgórza', 'Emily Brontë', 1847, 'Książka', '#c7115a'),
+            (43, 'Duma i uprzedzenie', 'Jane Austen', 1813, 'Książka', '#73bfb1'),
+            (44, 'Bracia Karamazow', 'Fiodor Dostojewski', 1880, 'Książka', '#cdac99'),
+            (45, 'Sin City: Miasto grzechu', 'Frank Miller', 1991, 'Komiks', '#ae6f0f'),
+            (46, 'Nowy wspaniały świat', 'Aldous Huxley', 1932, 'Książka', '#4fc86f'),
+            (47, 'Tygodnik Powszechny', 'Tygodnik Powszechny Sp. z o.o.', 2023, 'Czasopismo', '#73417a'),
+            (48, 'Sieci', 'Fratria', 2023, 'Czasopismo', '#79cf9d'),
+            (49, 'Wielki Gatsby', 'F. Scott Fitzgerald', 1925, 'Książka', '#6f3a98'),
+            (50, 'Do Rzeczy', 'Orle Pióro', 2023, 'Czasopismo', '#fafc37'),
+            (51, 'Kaznodzieja', 'Garth Ennis, Steve Dillon', 1995, 'Komiks', '#c6b176'),
+            (52, 'Wprost', 'AWR Wprost', 2023, 'Czasopismo', '#893953'),
+            (53, 'Zabić drozda', 'Harper Lee', 1960, 'Książka', '#90169f'),
+            (54, 'Persepolis', 'Marjane Satrapi', 2000, 'Komiks', '#404ce5'),
+            (55, 'Lolita', 'Vladimir Nabokov', 1955, 'Książka', '#ae1fc7'),
+            (56, 'Buszujący w zbożu', 'J.D. Salinger', 1951, 'Książka', '#4e47f4'),
+            (57, 'Pachnidło', 'Patrick Süskind', 1985, 'Książka', '#f22615'),
+            (58, 'Newsweek Polska', 'Ringier Axel Springer Polska', 2023, 'Czasopismo', '#8d6a48'),
+            (59, 'Maus', 'Art Spiegelman', 1986, 'Komiks', '#0b3afa'),
+            (60, 'Sandman: Preludia i nokturny', 'Neil Gaiman', 1989, 'Komiks', '#adf2f4'),
+            (61, 'V jak vendetta', 'Alan Moore, David Lloyd', 1982, 'Komiks', '#5e138c'),
+            (62, 'Alchemik', 'Paulo Coelho', 1988, 'Książka', '#a52399'),
+            (63, 'Strażnicy', 'Alan Moore, Dave Gibbons', 1986, 'Komiks', '#17d0dc'),
+            (64, 'Igrzyska śmierci', 'Suzanne Collins', 2008, 'Książka', '#7d20d3'),
+            (65, 'Opowieści z Narnii: Lew, Czarownica i stara szafa', 'C.S. Lewis', 1950, 'Książka', '#e24e8b'),
+            (66, 'Gra o tron', 'George R.R. Martin', 1996, 'Książka', '#42092f'),
+            (67, 'Batman: Zabójczy żart', 'Alan Moore, Brian Bolland', 1988, 'Komiks', '#bc2c56'),
+            (68, 'Złodziejka książek', 'Markus Zusak', 2005, 'Książka', '#e5243e'),
+            (69, 'Sto lat samotności', 'Gabriel García Márquez', 1967, 'Książka', '#1d9a4c'),
+            (70, 'Polityka', 'Polityka Sp. z o.o.', 2023, 'Czasopismo', '#797c2a'),
+            (71, 'Smerfy: Czarne Smerfy', 'Peyo', 1963, 'Komiks', '#b246a1'),
+            (72, 'Diuna', 'Frank Herbert', 1965, 'Książka', '#d72361'),
+            (73, 'Cień wiatru', 'Carlos Ruiz Zafón', 2001, 'Książka', '#2786cd'),
+            (74, 'Harry Potter i Kamień Filozoficzny', 'J.K. Rowling', 1997, 'Książka', '#daf3f1'),
+            (75, 'Hobbit, czyli tam i z powrotem', 'J.R.R. Tolkien', 1937, 'Książka', '#8bc2b3'),
+            (76, 'Władca Pierścieni: Drużyna Pierścienia', 'J.R.R. Tolkien', 1954, 'Książka', '#e6d3b1'),
+            (77, 'National Geographic Polska', 'Burda Media Polska', 2023, 'Czasopismo', '#d47801'),
+            (78, 'Mały Książę', 'Antoine de Saint-Exupéry', 1943, 'Książka', '#2200a0'),
+            (79, 'Focus', 'Burda Media Polska', 2022, 'Czasopismo', '#7b6bb0'),
+            (80, 'Folwark zwierzęcy', 'George Orwell', 1945, 'Książka', '#3b78db'),
+            (81, 'Rok 1984', 'George Orwell', 1949, 'Książka', '#eb1789'),
+            (82, 'Świat Nauki', 'Prószyński Media', 2023, 'Czasopismo', '#2b1d18'),
+            (83, 'Tintin: Cygaro faraona', 'Hergé', 1934, 'Komiks', '#af35f1'),
+            (84, 'Asteriks z Galij', 'René Goscinny, Albert Uderzo', 1961, 'Komiks', '#b40e64'),
+            (85, 'Mistrz i Małgorzata', 'Michaił Bułhakow', 1967, 'Książka', '#b18652'),
+            (86, 'Zbrodnia i kara', 'Fiodor Dostojewski', 1866, 'Książka', '#296a3a'),
+            (87, 'Wiedza i Życie', 'Prószyński Media', 2023, 'Czasopismo', '#68b3c0'),
+            (88, 'Chłopi', 'Władysław Reymont', 1904, 'Książka', '#1ebac5'),
+            (89, 'Kaczor Donald', 'Egmont Polska', 2023, 'Czasopismo', '#20ef8d'),
+            (90, 'Thorgal: Zdradzona czarodziejka', 'Grzegorz Rosiński, Jean Van Hamme', 1980, 'Komiks', '#4abd53'),
+            (91, 'Wesele', 'Stanisław Wyspiański', 1901, 'Książka', '#436c32'),
+            (92, 'Silmarillion', 'J.R.R Tolkien', '1977', 'Książka', '#72a83d'),
+            (93, 'Dziady, cz. III', 'Adam Mickiewicz', 1832, 'Książka', '#2dc9f1'),
+            (94, 'Ferdydurke', 'Witold Gombrowicz', 1937, 'Książka', '#1a092e'),
+            (95, 'Quo Vadis', 'Henryk Sienkiewicz', 1896, 'Książka', '#8c6dc5'),
+            (96, 'Kajko i Kokosz: Szkoła latania', 'Janusz Christa', 1975, 'Komiks', '#84f2fd'),
+            (97, 'CD-Action', 'Wydawnictwo Bauer', 2023, 'Czasopismo', '#67ea7d'),
+            (98, 'Lalka', 'Bolesław Prus', 1890, 'Książka', '#b933b8'),
+            (99, 'Pan Tadeusz', 'Adam Mickiewicz', 1834, 'Książka', '#9f5539'),
+            (100, 'Solaris', 'Stanisław Lem', 1961, 'Książka', '#fe14eb'),
+            (101, 'Wiedźmin: Ostatnie życzenie', 'Andrzej Sapkowski', 1993, 'Książka', '#7372b2'),
+            (102, 'Pan Samochodzik i templariusze', 'Zbigniew Nienacki', 1966, 'Książka', '#8b131b');
         """
         )
 
@@ -254,14 +256,15 @@ def dodaj_ksiazke(ksiazka: NowaKsiazka):
     conn = polacz_z_db()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO ksiazki (tytul, autor, rok, rodzaj) VALUES (%s, %s, %s, %s) RETURNING id;", (ksiazka.tytul, ksiazka.autor, ksiazka.rok, ksiazka.rodzaj)
+        "INSERT INTO ksiazki (tytul, autor, rok, rodzaj, kolor_okladki) VALUES (%s, %s, %s, %s, %s) RETURNING id;", 
+        (ksiazka.tytul, ksiazka.autor, ksiazka.rok, ksiazka.rodzaj, ksiazka.kolor_okladki)
     ) 
     nowe_id = cursor.fetchone()[0]
 
     conn.commit()
     cursor.close()
     conn.close()
-    return {"id": nowe_id, "tytul": ksiazka.tytul, "autor": ksiazka.autor, "rok": ksiazka.rok, "rodzaj": ksiazka.rodzaj}
+    return {"id": nowe_id, "tytul": ksiazka.tytul, "autor": ksiazka.autor, "rok": ksiazka.rok, "rodzaj": ksiazka.rodzaj, "kolor_okladki": ksiazka.kolor_okladki}
 
 @app.delete("/ksiazki/{ksiazka_id}")
 def usun_ksiazke(ksiazka_id: int):
@@ -285,8 +288,8 @@ def usun_ksiazke(ksiazka_id: int):
 def edytuj_ksiazke(ksiazka_id: int, ksiazka: NowaKsiazka):
     conn = polacz_z_db()
     cursor = conn.cursor()
-    cursor.execute("UPDATE ksiazki SET tytul = %s, autor = %s, rok = %s, rodzaj = %s WHERE id = %s RETURNING id;",
-        (ksiazka.tytul, ksiazka.autor, ksiazka.rok, ksiazka.rodzaj, ksiazka_id))
+    cursor.execute("UPDATE ksiazki SET tytul = %s, autor = %s, rok = %s, rodzaj = %s, kolor_okladki = %s WHERE id = %s RETURNING id;",
+        (ksiazka.tytul, ksiazka.autor, ksiazka.rok, ksiazka.rodzaj, ksiazka.kolor_okladki, ksiazka_id))
     zaktualizowana = cursor.fetchone()
 
     if not zaktualizowana: #nie można zaktualizować danych o książce, która nie jest dodana do bazy danych
@@ -297,7 +300,7 @@ def edytuj_ksiazke(ksiazka_id: int, ksiazka: NowaKsiazka):
     conn.commit()
     cursor.close()
     conn.close()
-    return {"id": ksiazka_id, "tytul": ksiazka.tytul, "autor": ksiazka.autor}
+    return {"id": ksiazka_id, "tytul": ksiazka.tytul, "autor": ksiazka.autor, "rok": ksiazka.rok, "rodzaj": ksiazka.rodzaj, "kolor_okladki": ksiazka.kolor_okladki}
 
 @app.post("/uzytkownicy", status_code=201)
 def zarejestruj_uzytkownika(uzytkownik: NowyUzytkownik):
