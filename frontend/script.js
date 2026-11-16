@@ -209,12 +209,18 @@ async function DodajLubEdytujKsiazke(event) {
 
             komunikat.style.color = "green";
             komunikat.innerText = "Zapisano pozycję w bazie!";
+            
+            let zapamietaneId = idEdycji; //zapamiętanie ID przed wyczyszczeniem formularza
 
             document.getElementById("formularz-ksiazki").reset();
             document.getElementById("edytuj-id").value = "";
             document.getElementById("btn-zapisz-ksiazke").innerText = "Dodaj pozycję";
 
-            PobierzKatalog();
+            await PobierzKatalog();
+
+            if (zapamietaneId !== "") {
+                PokazSzczegoly(zapamietaneId); //automatyczne odświeżenie okienka szczegółów dla zapamiętanego ID po edycji pozycji
+            }
         } else {
             komunikat.style.color = "red";
             komunikat.innerText = "Błąd zapisu danych.";
