@@ -2,7 +2,7 @@
 
 Wykonujący: Bartosz Hauff, Adam Musiał
 
-Ostatnia aktualizacja: 12.11.2026
+Ostatnia aktualizacja: 19.11.2026
 
 ## Frontend
 
@@ -45,7 +45,8 @@ Zwraca listę wszystkich książek:
     "tytul": "Wiedźmin",
     "autor": "Andrzej Sapkowski",
     "rok": 1990,
-    "rodzaj": "Książka"
+    "rodzaj": "Książka",
+    "kolor_okladki": "#8b131b"
   }
 ]
 ```
@@ -58,7 +59,8 @@ Zwraca pojedynczą książkę (lub kod `404`, gdy zasób nie istnieje):
   "tytul": "Wiedźmin",
   "autor": "Andrzej Sapkowski",
   "rok": 1990,
-  "rodzaj": "Książka"
+  "rodzaj": "Książka",
+  "kolor_okladki": "#8b131b"
 }
 ```
 
@@ -71,7 +73,8 @@ Dodaje nową książkę (zwraca kod `201` lub `400`, gdy pola są puste).
   "tytul": "Solaris",
   "autor": "Stanisław Lem",
   "rok": 1961,
-  "rodzaj": "Książka"
+  "rodzaj": "Książka",
+  "kolor_okladki": "#8b131b"
 }
 ```
 
@@ -82,11 +85,12 @@ Dodaje nową książkę (zwraca kod `201` lub `400`, gdy pola są puste).
   "tytul": "Solaris",
   "autor": "Stanisław Lem",
   "rok": 1961,
-  "rodzaj": "Książka"
+  "rodzaj": "Książka",
+  "kolor_okladki": "#8b131b"
 }
 ```
 
-#### `PUT /ksiazki/{ksiazka{id}`
+#### `PUT /ksiazki/{ksiazka_id}`
 Aktualizuje dane książki o podanym ID:
 ```json
 {
@@ -94,7 +98,8 @@ Aktualizuje dane książki o podanym ID:
   "tytul": "Wiedźmin - Poprawiony",
   "autor": "Andrzej Sapkowski",
   "rok": 1990,
-  "rodzaj": "Książka"
+  "rodzaj": "Książka",
+  "kolor_okladki": "#8b131b"
 }
 ```
 
@@ -120,7 +125,7 @@ Zwraca listę użytkowników:
 ```
 
 ####  `POST /uzytkownicy`
-Zwraca listę użytkowników:
+Dodaje użytkownika do bazy:
 ```json
 [
   {
