@@ -3,8 +3,10 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI(title="Biblioteka", root_path="/api")
+Instrumentator().instrument(app).expose(app)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 def polacz_z_db():
