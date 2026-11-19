@@ -29,9 +29,15 @@ document.getElementById("formularz-rejestracji").addEventListener("submit", asyn
         });
 
         if (response.status === 201) {
+            const nowyUzytkownik = await response.json();
+            localStorage.setItem("zalogowanyUzytkownik", JSON.stringify(nowyUzytkownik));
+
             komunikat.style.color = "green";
-            komunikat.innerText = "Konto utworzone pomyślnie! Możesz wracać do logowania.";
-            document.getElementById("formularz-rejestracji").reset();
+            komunikat.innerText = "Konto utworzone pomyślnie! Przekierowywanie...";
+            
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 600);
         } else if (response.status === 400) {
             const data = await response.json();
             komunikat.style.color = "red";
