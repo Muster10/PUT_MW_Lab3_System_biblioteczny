@@ -11,6 +11,21 @@ async function SprawdzSesje() {
     if (tekstUzytkownika !== null) {
         let uzytkownik = JSON.parse(tekstUzytkownika);
 
+        try {
+            let checkRes = await fetch("/api/uzytkownicy");
+            if (checkRes.ok) {
+                let uzytkownicy = await checkRes.json();
+                let kontoIstnieje = uzytkownicy.some(u => u.id === uzytkownik.id && u.login === uzytkownik.login);
+
+                if (!kontoIstnieje) {
+                    localStorage.removeItem("zalogowanyUzytkownik");
+                    return;
+                }
+            }
+        } catch (error) {
+            console.error("Błąd weryfikacji sesji:", error);
+        }
+
         powitanie.innerText = "Zalogowany: " + uzytkownik.login;
         linkLogowanie.style.display = "none";
         linkRejestracja.style.display  = "none";
