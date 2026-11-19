@@ -49,6 +49,10 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: biblioteka_grafana
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     ports:
       - "3000:3000"
     environment:

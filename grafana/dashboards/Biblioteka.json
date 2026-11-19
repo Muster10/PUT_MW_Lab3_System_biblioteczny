@@ -1,0 +1,65 @@
+{
+  "uid": "biblioteka-omnibus",
+  "title": "Biblioteka",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Ruch na sekundę",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "name": "Prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(http_requests_total[1m]))",
+          "legendFormat": "RPS"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Liczba zapytań wg endpointów",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "name": "Prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (handler, status) (http_requests_total)",
+          "legendFormat": "{{handler}} ({{status}})"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Średni czas odpowiedzi w sekundach",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "datasource": {
+        "type": "prometheus",
+        "name": "Prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m])",
+          "legendFormat": "Średni czas"
+        }
+      ]
+    }
+  ]
+}
