@@ -373,6 +373,19 @@ def dodaj_wypozyczenie(wypoz: NoweWypozyczenie):
 
     try:
         cursor.execute(
+            """
+            SELECT 1 FROM wypozyczenia
+            WHERE ksiazka_id = %s AND  uzytkownik_id = %s
+            """,
+            (wypoz.ksiazka_id, wypoz.uzytkownik_id)
+        )
+
+        if cursor.fetchone() is not None:
+            cursor.close()
+            conn.close()
+            raise HTTPException(status_code=400, detail="Masz już tę pozycję na liście wypożyczeń.")
+
+        cursor.execute(
             "INSERT INTO wypozyczenia (ksiazka_id, uzytkownik_id, typ) VALUES (%s, %s, %s) RETURNING id;",
             (wypoz.ksiazka_id, wypoz.uzytkownik_id, wypoz.typ)
         )
@@ -394,7 +407,22 @@ def dodaj_wypozyczenie(wypoz: NoweWypozyczenie):
         "typ": wypoz.typ
     }
 
-# docker-compose up
-# docker-compose down
-# docker-compose up --build
+# docker-compose up --build -d
 # docker-compose down -v
+# docker compose up --build -d --scale backend=3
+
+# Poniższe zrobić każdy punkt jako osobny commit (np. tworzysz tabelę historia to usuwasz tę linijkę stąd, commitujesz wszystko i push)
+# TODO: Utworzenie tabeli historii zmian
+# TODO: Zapis historii (w każdym endpoincie modyfikującym POST/PUT/DELTE dodać INSERT'a do tabeli historii) + endpoint GET /history
+# TODO: Dodać możliwość wyświetlania tabeli historii (imo można to walnąć jako nowa stronka z linkiem przekierowującym z panelu bibliotekarza)
+# TODO: Testy automatyczne (ich mnóstwo będzie)
+# TODO: W compose dodać sekcje networks (króciutkie)
+# TODO: Sprawdzić czy compose będzie się bez problemu klonował
+# TODO: Uzupełnić README o powyższe
+
+# TODO: Cache lub prosta kolejka
+# TODO: ALerty/detekcja anomalii
+# TODO: Wprowadzenie systemu zwracania wypożyczeń, naliczania opłat itp
+# TODO: Usprawnienie systemu rezerwacji
+# TODO: CI/CD połączyć z tymi testami
+# TODO: Potencjalnie zrobić bezpieczniejsze logowanie - hashowanie haseł itp

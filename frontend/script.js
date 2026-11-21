@@ -178,7 +178,7 @@ async function WypozyczLubZarezerwuj(idKsiazki,akcja) {
 
     let uzytkownik = JSON.parse(tekstUzytkownika);
 
-    await fetch("/api/wypozyczenia", {
+    let response = await fetch("/api/wypozyczenia", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -189,6 +189,13 @@ async function WypozyczLubZarezerwuj(idKsiazki,akcja) {
             typ: akcja
         })
     });
+
+    if (!response.ok) {
+        let blad = await response.json().catch(() => ({}));
+        alert(blad.detail || "Nie udało się wykonać operacji.");
+        return;
+    }
+    
     SprawdzSesje();
 }
 
