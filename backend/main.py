@@ -426,3 +426,9 @@ def dodaj_wypozyczenie(wypoz: NoweWypozyczenie):
 # TODO: Usprawnienie systemu rezerwacji
 # TODO: CI/CD połączyć z tymi testami
 # TODO: Potencjalnie zrobić bezpieczniejsze logowanie - hashowanie haseł itp
+
+# TODO: Rozważyć wprowadzenie prometheus client w pythonie
+# TODO: Rozważyć budowanie obrazu frontendu z konkretnej wersji alpine (zmiana w /frontend/Dockerfile)
+# TODO: Rozważyć ukrycie przycisku pokazywania katalogu (automatyczne pokazywanie od razu po wejściu na stronę)
+# TODO: Rozważyć automatyczne odświeżanie panelu konta (po usunięciu wypożyczonej książki trzeba f5 zrobić teraz)
+# TODO: Rozważyć dodanie "wygaszenia" przycisków wypożyczenia i rejestracji kiedy dana książka jest przez nas aktualnie wypożyzcona/zarezerwowana (aktualnie można kliknąć i przychodzi komunikat localhost says)
