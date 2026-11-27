@@ -22,6 +22,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    volumes:
+      - ./tests:/app/tests
     networks:
       - biblioteka_net
     healthcheck:

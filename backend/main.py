@@ -485,8 +485,7 @@ def pobierz_historie_ksiazek(ksiazka_id: int):
 # docker compose up --build -d --scale backend=3
 
 # Poniższe zrobić każdy punkt jako osobny commit (np. tworzysz tabelę historia to usuwasz tę linijkę stąd, commitujesz wszystko i push)
-# TODO: Zapis historii (w każdym endpoincie modyfikującym POST/PUT/DELTE dodać INSERT'a do tabeli historii) + endpoint GET /history
-# TODO: Testy automatyczne (ich mnóstwo będzie)
+# TODO: Dodać testy automatyczne w test_api.py
 # TODO: Uzupełnić README o powyższe
 
 # TODO: Cache lub prosta kolejka
