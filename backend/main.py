@@ -32,6 +32,14 @@ class DaneLogowania(BaseModel):
     login: str
     haslo: str
 
+def zapisz_historie(cursor, ksiazka_id, akcja: str, szczegoly: str, wykonawca: str = "admin"):
+    cursor.execute("""
+        INSERT INTO historia_zmian (ksiazka_id, akcja, wykonawca, szczegoly)
+        VALUES (%s, %s, %s, %s);
+        """,
+        (ksiazka_id, akcja, wykonawca, szczegoly),
+    )
+
 @app.on_event("startup")
 def utworz_tabele():
     conn = polacz_z_db()
@@ -281,6 +289,13 @@ def dodaj_ksiazke(ksiazka: NowaKsiazka):
     ) 
     nowe_id = cursor.fetchone()[0]
 
+    zapisz_historie(
+        cursor,
+        ksiazka_id=nowe_id,
+        akcja="CREATE",
+        szczegoly=f"Dodano pozycję: '{ksiazka.tytul}' ({ksiazka.autor}, {ksiazka.rok})",
+    )
+
     conn.commit()
     cursor.close()
     conn.close()
@@ -289,14 +304,21 @@ def dodaj_ksiazke(ksiazka: NowaKsiazka):
 @app.delete("/ksiazki/{ksiazka_id}")
 def usun_ksiazke(ksiazka_id: int):
     conn = polacz_z_db()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM ksiazki WHERE id = %s RETURNING id;", (ksiazka_id,))
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute("DELETE FROM ksiazki WHERE id = %s RETURNING id, tytul, autor;", (ksiazka_id,),)
     usunieta = cursor.fetchone()
 
     if not usunieta:
         cursor.close()
         conn.close()
         raise HTTPException(status_code=404, detail="Książka o podanym ID nie istnieje")
+
+    zapisz_historie(
+        cursor,
+        ksiazka_id=usunieta["id"],
+        akcja="DELETE",
+        szczegoly=f"Usunięto pozycję: '{usunieta['tytul']}' ({usunieta['autor']})",
+    )
 
     conn.commit()
     cursor.close()
@@ -316,6 +338,13 @@ def edytuj_ksiazke(ksiazka_id: int, ksiazka: NowaKsiazka):
         cursor.close()
         conn.close()
         raise HTTPException(status_code=404, detail="Książka o podanym ID nie istnieje")
+
+    zapisz_historie(
+        cursor,
+        ksiazka_id=ksiazka_id,
+        akcja="UPDATE",
+        szczegoly=f"Zaktualizowano pozycję: '{ksiazka.tytul}' ({ksiazka.autor}, {ksiazka.rok})",
+    )
 
     conn.commit()
     cursor.close()
@@ -425,13 +454,38 @@ def dodaj_wypozyczenie(wypoz: NoweWypozyczenie):
         "typ": wypoz.typ
     }
 
+@app.get("/ksiazki/{ksiazka_id}/history")
+def pobierz_historie_ksiazek(ksiazka_id: int):
+    conn = polacz_z_db()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+    cursor.execute("SELECT id FROM ksiazki WHERE id = %s;", (ksiazka_id,))
+    if not cursor.fetchone():
+        cursor.close()
+        conn.close()
+        raise HTTPException(status_code=404, detail="Książka o podanym ID nie istnieje")
+
+    cursor.execute(
+        """
+        SELECT id, ksiazka_id, akcja, wykonawca, szczegoly, data_zmiany
+        FROM historia_zmian
+        WHERE ksiazka_id = %s
+        ORDER BY data_zmiany DESC, id DESC;
+        """,
+        (ksiazka_id,),
+    )
+
+    historia = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return historia
+
 # docker-compose up --build -d
 # docker-compose down -v
 # docker compose up --build -d --scale backend=3
 
 # Poniższe zrobić każdy punkt jako osobny commit (np. tworzysz tabelę historia to usuwasz tę linijkę stąd, commitujesz wszystko i push)
 # TODO: Zapis historii (w każdym endpoincie modyfikującym POST/PUT/DELTE dodać INSERT'a do tabeli historii) + endpoint GET /history
-# TODO: Dodać możliwość wyświetlania tabeli historii (imo można to walnąć jako nowa stronka z linkiem przekierowującym z panelu bibliotekarza)
 # TODO: Testy automatyczne (ich mnóstwo będzie)
 # TODO: Uzupełnić README o powyższe
 
@@ -447,3 +501,4 @@ def dodaj_wypozyczenie(wypoz: NoweWypozyczenie):
 # TODO: Rozważyć ukrycie przycisku pokazywania katalogu (automatyczne pokazywanie od razu po wejściu na stronę)
 # TODO: Rozważyć automatyczne odświeżanie panelu konta (po usunięciu wypożyczonej książki trzeba f5 zrobić teraz)
 # TODO: Rozważyć dodanie "wygaszenia" przycisków wypożyczenia i rejestracji kiedy dana książka jest przez nas aktualnie wypożyzcona/zarezerwowana (aktualnie można kliknąć i przychodzi komunikat localhost says)
+# TODO: Dodać możliwość wyświetlenia jako administrator całej tabeli historii zmian (imo osobna stronka z możliwością filtrowania po id książki, rodzaju wpisu (update, post itp), autorze, dacie)
