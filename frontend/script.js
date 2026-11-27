@@ -142,6 +142,7 @@ async function PokazSzczegoly(idKsiazki) {
                 przyciskiAdmina = `
                     <input type="button" value="Edytuj" onclick="ZaladujDoEdycji(${ksiazka.id}, '${ksiazka.tytul}', '${ksiazka.autor}', ${ksiazka.rok}, '${ksiazka.kolor_okladki}')" class="btn btn-red">
                     <input type="button" value="Usuń" onclick="UsunKsiazke(${ksiazka.id})" class="btn btn-red"> 
+                    <input type="button" value="Historia" onclick="PokazHistorieKsiazki(${ksiazka.id})" class="btn btn-red">
                 `;
             }
         }
@@ -159,6 +160,7 @@ async function PokazSzczegoly(idKsiazki) {
                 <input type="button" value="Wypożycz" onclick="WypozyczLubZarezerwuj(${ksiazka.id}, 'wypożyczono')" class="btn btn-red">
                 <input type="button" value="Zarezerwuj" onclick="WypozyczLubZarezerwuj(${ksiazka.id}, 'zarezerwowano')" class="btn btn-red">
                 ${przyciskiAdmina}
+                <div id="historia-pozycji"></div>
             </div>
         `;
     }
@@ -278,6 +280,37 @@ async function UsunKsiazke(idKsiazki) {
         }
     }
     catch (error) {
+        console.error(error);
+    }
+}
+
+async function PokazHistorieKsiazki(idKsiazki) {
+    let pojemnik = document.getElementById("historia-pozycji");
+    if (!pojemnik) return;
+
+    pojemnik.innerHTML = "<p>Ładowanie historii...</p>";
+
+    try {
+        let response = await fetch(`/api/ksiazki/${idKsiazki}/history`);
+        if (!response.ok) {
+            pojemnik.innerHTML = "<p>Nie udało się pobrać historii zmian.</p>";
+            return;
+        }
+
+        let wpisy = await response.json();
+        if (wpisy.length === 0) {
+            pojemnik.innerHTML = "<p>Brak zapisanych zmian dla tej pozycji.</p>";
+            return;
+        }
+
+        let html = "<h4>Historia zmian</h4><ul>";
+        wpisy.forEach(w => {
+            html += `<li><b>${w.akcja}</b> - ${w.wykonawca} (${w.data_zmiany}): ${w.szczegoly || ""}</li>`;
+        });
+        html += "</ul>";
+        pojemnik.innerHTML = html;
+    } catch (error) {
+        pojemnik.innerHTML = "<p>Błąd połączenia przy pobieraniu historii.</p>";
         console.error(error);
     }
 }
