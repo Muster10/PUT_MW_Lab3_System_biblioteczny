@@ -4,7 +4,7 @@ services:
     container_name: biblioteka_baza
     environment:
       POSTGRES_USER: biblioteka
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?brak pliku .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-biblioteka_dev_pass}
       POSTGRES_DB: biblioteka
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -18,7 +18,7 @@ services:
     build: ./backend
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://biblioteka:${POSTGRES_PASSWORD}@database:5432/biblioteka
+      DATABASE_URL: postgresql://biblioteka:${POSTGRES_PASSWORD:-biblioteka_dev_pass}@database:5432/biblioteka
     depends_on:
       database:
         condition: service_healthy
