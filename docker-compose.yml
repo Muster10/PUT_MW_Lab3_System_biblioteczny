@@ -8,6 +8,8 @@ services:
       POSTGRES_DB: biblioteka
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - biblioteka_net
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "biblioteka"]
       interval: 2s
@@ -20,6 +22,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - biblioteka_net
     healthcheck:
       test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://localhost:8000/health')"]
       interval: 5s
@@ -32,6 +36,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    networks:
+      - biblioteka_net
 
   prometheus:
     image: prom/prometheus:latest
@@ -42,6 +48,8 @@ services:
       - "9090:9090"
     depends_on:
       - backend
+    networks:
+      - biblioteka_net
 
   grafana:
     image: grafana/grafana:latest
@@ -57,6 +65,12 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
       - prometheus
+    networks:
+      - biblioteka_net
+
+networks:
+  biblioteka_net:
+    driver: bridge
 
 volumes:
   pgdata:

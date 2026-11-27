@@ -221,3 +221,5 @@ __marimo__/
 
 # Local Docker Compose override
 docker-compose.override.yml
+
+.vscode
