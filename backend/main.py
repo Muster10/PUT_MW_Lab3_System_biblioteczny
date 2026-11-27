@@ -199,6 +199,19 @@ def utworz_tabele():
         #synchronizacja licznika dla tabeli książek
         cursor.execute("SELECT setval('ksiazki_id_seq', (SELECT MAX(id) FROM ksiazki));")
 
+        #tabela historii zmian
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS historia_zmian (
+            id SERIAL PRIMARY KEY,
+            ksiazka_id INTEGER REFERENCES ksiazki(id) ON DELETE SET NULL,
+            akcja VARCHAR(20) NOT NULL,
+            wykonawca VARCHAR(100) NOT NULL DEFAULT 'admin',
+            szczegoly TEXT,
+            data_zmiany TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+
         conn.commit()
 
     finally:
@@ -417,12 +430,9 @@ def dodaj_wypozyczenie(wypoz: NoweWypozyczenie):
 # docker compose up --build -d --scale backend=3
 
 # Poniższe zrobić każdy punkt jako osobny commit (np. tworzysz tabelę historia to usuwasz tę linijkę stąd, commitujesz wszystko i push)
-# TODO: Utworzenie tabeli historii zmian
 # TODO: Zapis historii (w każdym endpoincie modyfikującym POST/PUT/DELTE dodać INSERT'a do tabeli historii) + endpoint GET /history
 # TODO: Dodać możliwość wyświetlania tabeli historii (imo można to walnąć jako nowa stronka z linkiem przekierowującym z panelu bibliotekarza)
 # TODO: Testy automatyczne (ich mnóstwo będzie)
-# TODO: W compose dodać sekcje networks (króciutkie)
-# TODO: Sprawdzić czy compose będzie się bez problemu klonował
 # TODO: Uzupełnić README o powyższe
 
 # TODO: Cache lub prosta kolejka
